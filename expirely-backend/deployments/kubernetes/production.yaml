@@ -1,0 +1,14 @@
+# This repository must never contain a real kubeconfig or bearer token.
+#
+# Supply cluster credentials through the deployment platform's secret store
+# (for example a protected CI credential, workload identity, or a local
+# KUBECONFIG file outside this repository).
+#
+# The credential previously committed at this path must be revoked and rotated;
+# replacing this file does not remove it from Git history.
+apiVersion: v1
+kind: Config
+clusters: []
+users: []
+contexts: []
+current-context: ""
