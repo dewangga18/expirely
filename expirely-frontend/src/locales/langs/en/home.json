@@ -1,0 +1,33 @@
+{
+  "title": "Home",
+  "greeting": "Welcome back, {{name}}",
+  "greetingGuest": "Welcome to Expirely",
+  "intro": "Track your household items' expiry dates. Never let food go to waste again.",
+  "useFirst": {
+    "title": "Use first",
+    "description": "The three items with the shortest shelf life.",
+    "viewAll": "View all",
+    "expired": "Already expired",
+    "today": "Expires today",
+    "days": "{{count}} days left"
+  },
+  "errors": {
+    "load": "The summary could not be loaded.",
+    "retry": "Reload"
+  },
+  "stats": {
+    "tracked": "Tracked Items",
+    "expiringSoon": "Expiring Soon",
+    "consumed": "Consumed",
+    "wasted": "Wasted"
+  },
+  "shortcuts": {
+    "title": "Quick Access",
+    "items": "View All Items",
+    "itemsDesc": "See your tracked items sorted by expiry.",
+    "addItem": "Add Item",
+    "addItemDesc": "Manually add a new item.",
+    "scan": "Scan Photo",
+    "scanDesc": "Read the product name and date from its packaging."
+  }
+}

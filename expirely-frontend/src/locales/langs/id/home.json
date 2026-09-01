@@ -1,0 +1,33 @@
+{
+  "title": "Beranda",
+  "greeting": "Selamat datang kembali, {{name}}",
+  "greetingGuest": "Selamat Datang di Expirely",
+  "intro": "Pantau masa simpan barang rumah tangga Anda. Jangan sampai makanan terbuang sia-sia.",
+  "useFirst": {
+    "title": "Gunakan lebih dulu",
+    "description": "Tiga barang dengan masa simpan paling pendek.",
+    "viewAll": "Lihat semua",
+    "expired": "Sudah kedaluwarsa",
+    "today": "Kedaluwarsa hari ini",
+    "days": "{{count}} hari lagi"
+  },
+  "errors": {
+    "load": "Ringkasan belum bisa dimuat.",
+    "retry": "Muat ulang"
+  },
+  "stats": {
+    "tracked": "Barang Dipantau",
+    "expiringSoon": "Akan Kadaluarsa",
+    "consumed": "Terpakai",
+    "wasted": "Terbuang"
+  },
+  "shortcuts": {
+    "title": "Akses Cepat",
+    "items": "Lihat Semua Barang",
+    "itemsDesc": "Lihat barang berdasarkan masa simpan.",
+    "addItem": "Tambah Barang",
+    "addItemDesc": "Tambah barang baru secara manual.",
+    "scan": "Pindai Foto",
+    "scanDesc": "Kenali nama dan tanggal dari foto kemasan."
+  }
+}

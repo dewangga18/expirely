@@ -1,0 +1,142 @@
+{
+  "title": "Stok rumah",
+  "subtitle": "Dahulukan barang yang masa simpannya paling pendek.",
+  "buttons": {
+    "new": "Tambah Barang",
+    "recommend": "Ide pakai ({{count}})",
+    "fromPhoto": "Pindai Foto"
+  },
+  "source": {
+    "ai": "Foto AI",
+    "manual": "Manual"
+  },
+  "estimation": {
+    "estimated": "Perkiraan",
+    "exact": "Tanggal Pasti"
+  },
+  "status": {
+    "active": "Aktif",
+    "consumed": "Terpakai",
+    "wasted": "Terbuang",
+    "expired": "Kedaluwarsa",
+    "today": "Hari Ini",
+    "daysLeft": "{{count}} hari lagi"
+  },
+  "toolbar": {
+    "searchPlaceholder": "Cari nama barang..."
+  },
+  "table": {
+    "namaProduk": "Nama Produk",
+    "expiry": "Kedaluwarsa",
+    "expiryDate": "Tanggal Kedaluwarsa",
+    "source": "Sumber",
+    "estimation": "Estimasi"
+  },
+  "form": {
+    "newTitle": "Tambah Barang Baru",
+    "editTitle": "Ubah {{name}}",
+    "namaProduk": "Nama Produk",
+    "expiryDate": "Tanggal Kedaluwarsa"
+  },
+  "validation": {
+    "nameMin": "Nama minimal 2 karakter.",
+    "nameMax": "Nama maksimal 255 karakter.",
+    "dateRequired": "Tanggal kedaluwarsa wajib diisi."
+  },
+  "detail": {
+    "title": "Detail Barang",
+    "daysLeft": "Hari Sebelum Kedaluwarsa",
+    "source": "Sumber",
+    "estimated": "Estimasi",
+    "kategori": "Kategori"
+  },
+  "actions": {
+    "retry": "Coba lagi",
+    "markConsumed": "Tandai Terpakai",
+    "markWasted": "Tandai Terbuang",
+    "markConsumedShort": "Sudah dipakai",
+    "markWastedShort": "Terbuang"
+  },
+  "rowActions": {
+    "viewDetail": "Lihat Detail",
+    "edit": "Ubah",
+    "markConsumed": "Tandai Terpakai",
+    "markWasted": "Tandai Terbuang",
+    "openMenu": "Buka tindakan untuk {{name}}"
+  },
+  "delete": {
+    "title": "Hapus Barang",
+    "message": "Barang {{name}} akan dihapus."
+  },
+  "emptyState": {
+    "title": "Lacak Barang Rumah Tangga Anda",
+    "description": "Ambil foto belanjaan atau tambahkan barang secara manual. Expirely akan melacak tanggal kedaluwarsa dan mengingatkan Anda sebelum barang terbuang.",
+    "photoUpload": "Tambah dari Foto",
+    "manualAdd": "Tambah Manual"
+  },
+  "recommendation": {
+    "title": "Ide untuk dipakai lebih dulu",
+    "description": "Buat ide singkat untuk {{count}} barang yang akan kedaluwarsa dalam tujuh hari.",
+    "getButton": "Buat ide penggunaan",
+    "retry": "Coba Lagi",
+    "close": "Tutup"
+  },
+  "feedback": {
+    "saved": "Barang {{name}} tersimpan.",
+    "deleted": "Barang dihapus.",
+    "markedConsumed": "Barang ditandai sebagai terpakai.",
+    "markedWasted": "Barang ditandai sebagai terbuang."
+  },
+  "photoUpload": {
+    "title": "Tambah Barang dari Foto",
+    "dropzone": "Seret & lepas foto di sini, atau klik untuk memilih",
+    "formats": "Mendukung JPEG, PNG, WebP, GIF (maks 10MB)",
+    "takePhoto": "Ambil Foto",
+    "chooseFile": "Pilih File",
+    "recognize": "Kenali dengan AI",
+    "analyzing": "Menganalisis foto dengan AI...",
+    "removePreview": "Hapus foto yang dipilih",
+    "success": "{{name}} dikenali! Kedaluwarsa dalam {{days}} hari.",
+    "errors": {
+      "invalidType": "Tipe file tidak valid. Gunakan JPEG, PNG, WebP, atau GIF.",
+      "tooLarge": "File terlalu besar. Maksimal 10MB.",
+      "recognitionFailed": "AI tidak bisa mengenali produk. Coba foto lain atau tambahkan manual."
+    }
+  },
+  "errors": {
+    "loadData": "Gagal memuat barang.",
+    "saveFailed": "Gagal menyimpan barang.",
+    "deleteFailed": "Gagal menghapus barang.",
+    "recommendFailed": "Gagal mendapatkan rekomendasi.",
+    "quotaFailed": "Gagal memuat kuota hari ini.",
+    "rewardFailed": "Kuota tambahan belum bisa diberikan."
+  },
+  "quota": {
+    "title": "Kuota hari ini",
+    "description": "Input manual tetap gratis dan tidak memakai kuota.",
+    "photo": "Pindai foto",
+    "recommendation": "Ide penggunaan",
+    "reward": "Simulasikan iklan untuk +1",
+    "retry": "Muat ulang"
+  },
+  "ads": {
+    "banner": "Ruang sponsor — contoh penempatan iklan"
+  },
+  "waste": {
+    "title": "Tandai sebagai terbuang?",
+    "message": "{{name}} akan dipindahkan dari daftar aktif dan dicatat sebagai terbuang."
+  },
+  "categories": {
+    "buah_segar": "Buah segar",
+    "sayur_hijau": "Sayur hijau",
+    "sayur_umbi": "Sayur umbi",
+    "roti_tanpa_pengawet": "Roti tanpa pengawet",
+    "telur_lepas": "Telur lepas",
+    "daging_segar": "Daging segar",
+    "daging_beku": "Daging beku",
+    "ikan_segar": "Ikan segar",
+    "susu_segar_non_uht": "Susu segar non-UHT",
+    "keju_segar": "Keju segar",
+    "default_unknown": "Kategori lain"
+  }
+}

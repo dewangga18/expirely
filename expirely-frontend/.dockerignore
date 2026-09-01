@@ -1,0 +1,28 @@
+node_modules
+dist
+build
+.git
+.github
+.vscode
+.husky
+
+# Local envs — prod uses .env.prod, which IS copied in by the Dockerfile
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Docs and misc
+*.md
+docs
+coverage
+.DS_Store
+.cache
+.vercel
+.netlify
+tsconfig.tsbuildinfo
+
+# Editor & OS
+.idea
+Thumbs.db

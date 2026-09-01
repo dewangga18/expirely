@@ -1,0 +1,142 @@
+{
+  "title": "Household stock",
+  "subtitle": "Use items with the shortest shelf life first.",
+  "buttons": {
+    "new": "Add Item",
+    "recommend": "Use ideas ({{count}})",
+    "fromPhoto": "Scan Photo"
+  },
+  "source": {
+    "ai": "AI Photo",
+    "manual": "Manual"
+  },
+  "estimation": {
+    "estimated": "Estimated",
+    "exact": "Exact Date"
+  },
+  "status": {
+    "active": "Active",
+    "consumed": "Consumed",
+    "wasted": "Wasted",
+    "expired": "Expired",
+    "today": "Today",
+    "daysLeft": "{{count}} days left"
+  },
+  "toolbar": {
+    "searchPlaceholder": "Search item name..."
+  },
+  "table": {
+    "namaProduk": "Product Name",
+    "expiry": "Expiry",
+    "expiryDate": "Expiry Date",
+    "source": "Source",
+    "estimation": "Estimation"
+  },
+  "form": {
+    "newTitle": "Add New Item",
+    "editTitle": "Edit {{name}}",
+    "namaProduk": "Product Name",
+    "expiryDate": "Expiry Date"
+  },
+  "validation": {
+    "nameMin": "Name must be at least 2 characters.",
+    "nameMax": "Name must be at most 255 characters.",
+    "dateRequired": "Expiry date is required."
+  },
+  "detail": {
+    "title": "Item Detail",
+    "daysLeft": "Days Until Expiry",
+    "source": "Source",
+    "estimated": "Estimation",
+    "kategori": "Category"
+  },
+  "actions": {
+    "retry": "Try again",
+    "markConsumed": "Mark Consumed",
+    "markWasted": "Mark Wasted",
+    "markConsumedShort": "Used",
+    "markWastedShort": "Wasted"
+  },
+  "rowActions": {
+    "viewDetail": "View Detail",
+    "edit": "Edit",
+    "markConsumed": "Mark Consumed",
+    "markWasted": "Mark Wasted",
+    "openMenu": "Open actions for {{name}}"
+  },
+  "delete": {
+    "title": "Delete Item",
+    "message": "Item {{name}} will be deleted."
+  },
+  "emptyState": {
+    "title": "Track Your Household Items",
+    "description": "Take a photo of your groceries or add items manually. Expirely will track expiry dates and remind you before items go to waste.",
+    "photoUpload": "Add from Photo",
+    "manualAdd": "Add Manually"
+  },
+  "recommendation": {
+    "title": "Ideas to use first",
+    "description": "Create a short idea for {{count}} items expiring within seven days.",
+    "getButton": "Create usage ideas",
+    "retry": "Try Again",
+    "close": "Close"
+  },
+  "feedback": {
+    "saved": "Item {{name}} saved.",
+    "deleted": "Item deleted.",
+    "markedConsumed": "Item marked as consumed.",
+    "markedWasted": "Item marked as wasted."
+  },
+  "photoUpload": {
+    "title": "Add Item from Photo",
+    "dropzone": "Drag & drop a photo here, or click to browse",
+    "formats": "Supports JPEG, PNG, WebP, GIF (max 10MB)",
+    "takePhoto": "Take Photo",
+    "chooseFile": "Choose File",
+    "recognize": "Recognize with AI",
+    "analyzing": "Analyzing photo with AI...",
+    "removePreview": "Remove selected photo",
+    "success": "{{name}} recognized! Expires in {{days}} days.",
+    "errors": {
+      "invalidType": "Invalid file type. Please use JPEG, PNG, WebP, or GIF.",
+      "tooLarge": "File is too large. Maximum size is 10MB.",
+      "recognitionFailed": "AI could not recognize the product. Please try another photo or add manually."
+    }
+  },
+  "errors": {
+    "loadData": "Failed to load items.",
+    "saveFailed": "Failed to save item.",
+    "deleteFailed": "Failed to delete item.",
+    "recommendFailed": "Failed to get recommendations.",
+    "quotaFailed": "Failed to load today's quota.",
+    "rewardFailed": "The extra quota could not be granted."
+  },
+  "quota": {
+    "title": "Today's quota",
+    "description": "Manual input stays free and does not use quota.",
+    "photo": "Photo scans",
+    "recommendation": "Usage ideas",
+    "reward": "Simulate ad for +1",
+    "retry": "Reload"
+  },
+  "ads": {
+    "banner": "Sponsor space — sample ad placement"
+  },
+  "waste": {
+    "title": "Mark as wasted?",
+    "message": "{{name}} will leave the active list and be recorded as wasted."
+  },
+  "categories": {
+    "buah_segar": "Fresh fruit",
+    "sayur_hijau": "Leafy greens",
+    "sayur_umbi": "Root vegetables",
+    "roti_tanpa_pengawet": "Preservative-free bread",
+    "telur_lepas": "Loose eggs",
+    "daging_segar": "Fresh meat",
+    "daging_beku": "Frozen meat",
+    "ikan_segar": "Fresh fish",
+    "susu_segar_non_uht": "Fresh non-UHT milk",
+    "keju_segar": "Fresh cheese",
+    "default_unknown": "Other category"
+  }
+}
