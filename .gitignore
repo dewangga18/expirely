@@ -32,6 +32,10 @@ vendor/
 .env.local
 .env.*.local
 .env.prod
+
+# Firebase / Google Cloud service-account credentials
+*-firebase-adminsdk-*.json
+serviceAccountKey.json
 cmd/*/.env
 cmd/*/.env.local
 cmd/*/.env.*.local
