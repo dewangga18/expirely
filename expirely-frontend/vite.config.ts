@@ -46,7 +46,9 @@ export default defineConfig({
       },
     ],
   },
-  server: { port: PORT, host: true },
+  // Cloudflare Quick Tunnel uses a random `*.trycloudflare.com` hostname.
+  // Keep the allow-list scoped to that development-only tunnel suffix.
+  server: { port: PORT, host: true, allowedHosts: ['.trycloudflare.com'] },
   preview: { port: PORT, host: true },
   build: {
     chunkSizeWarningLimit: 1000,
