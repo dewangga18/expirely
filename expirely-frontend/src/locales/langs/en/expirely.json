@@ -97,10 +97,34 @@
     "analyzing": "Analyzing photo with AI...",
     "removePreview": "Remove selected photo",
     "success": "{{name}} recognized! Expires in {{days}} days.",
+    "storage": {
+      "label": "Where is it stored?",
+      "helper": "Used by AI as context for the spoilage-risk indicator.",
+      "options": {
+        "room_temperature": "Room temperature",
+        "refrigerator": "Refrigerator",
+        "freezer": "Freezer",
+        "pantry": "Pantry",
+        "unknown": "Not sure"
+      }
+    },
     "errors": {
       "invalidType": "Invalid file type. Please use JPEG, PNG, WebP, or GIF.",
       "tooLarge": "File is too large. Maximum size is 10MB.",
       "recognitionFailed": "AI could not recognize the product. Please try another photo or add manually."
+    }
+  },
+  "spoilage": {
+    "risk": {
+      "low": "Low spoilage risk",
+      "moderate": "Needs attention soon",
+      "high": "High spoilage risk"
+    },
+    "condition": {
+      "normal": "The visual condition looks normal.",
+      "watch": "There is a visual condition worth watching.",
+      "discard": "There are visible signs that should not be ignored before consumption.",
+      "unclear": "The visual condition cannot be assessed clearly."
     }
   },
   "errors": {

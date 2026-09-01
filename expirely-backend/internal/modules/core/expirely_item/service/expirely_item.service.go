@@ -87,7 +87,11 @@ func (s *Service) CreateManual(ctx context.Context, userID string, req *dto.Crea
 
 // CreateFromPhoto calls AI vision API to identify the product and expiry date.
 // Accepts either photoURL (download from URL) or photoBase64 (inline base64 data).
-func (s *Service) CreateFromPhoto(ctx context.Context, userID, photoBase64, mimeType string) (*dto.ItemResponse, error) {
+func (s *Service) CreateFromPhoto(ctx context.Context, userID, photoBase64, mimeType, storageLocation string) (*dto.ItemResponse, error) {
+	storageLocation, err := normalizeStorageLocation(storageLocation)
+	if err != nil {
+		return nil, err
+	}
 	today := time.Now().Format("2006-01-02")
 	reserved, err := s.repo.TryConsumeQuota(ctx, userID, today, "recognition", dailyRecognitionLimit)
 	if err != nil {
@@ -100,7 +104,7 @@ func (s *Service) CreateFromPhoto(ctx context.Context, userID, photoBase64, mime
 	if mimeType == "" {
 		mimeType = "image/jpeg"
 	}
-	aiResult, err := callAIVisionBase64(ctx, photoBase64, mimeType)
+	aiResult, err := callAIVisionBase64(ctx, photoBase64, mimeType, storageLocation)
 	if err != nil {
 		s.releaseQuota(ctx, userID, today, "recognition")
 		return nil, fmt.Errorf("AI recognition failed: %w", err)
@@ -148,7 +152,53 @@ func (s *Service) CreateFromPhoto(ctx context.Context, userID, photoBase64, mime
 		return nil, err
 	}
 
-	return toResponse(item), nil
+	response := toResponse(item)
+	response.SpoilageAssessment = buildSpoilageAssessment(aiResult, storageLocation)
+	return response, nil
+}
+
+var validStorageLocations = map[string]struct{}{
+	"room_temperature": {},
+	"refrigerator":     {},
+	"freezer":          {},
+	"pantry":           {},
+	"unknown":          {},
+}
+
+func normalizeStorageLocation(location string) (string, error) {
+	normalized := strings.ToLower(strings.TrimSpace(location))
+	if normalized == "" {
+		return "unknown", nil
+	}
+	if _, ok := validStorageLocations[normalized]; !ok {
+		return "", fmt.Errorf("%w: unsupported storage location", ErrInvalidInput)
+	}
+	return normalized, nil
+}
+
+func buildSpoilageAssessment(result *aiVisionResult, storageLocation string) *dto.SpoilageAssessment {
+	riskLevel := strings.ToLower(strings.TrimSpace(result.RisikoPembusukan))
+	if riskLevel != "low" && riskLevel != "moderate" && riskLevel != "high" {
+		riskLevel = "moderate"
+	}
+	visualCondition := strings.ToLower(strings.TrimSpace(result.KondisiVisual))
+	if visualCondition != "normal" && visualCondition != "watch" && visualCondition != "discard" && visualCondition != "unclear" {
+		visualCondition = "unclear"
+	}
+	if visualCondition == "discard" {
+		riskLevel = "high"
+	}
+	recommendation := strings.TrimSpace(result.RekomendasiPenyimpanan)
+	if recommendation == "" {
+		recommendation = "Periksa kondisi makanan sebelum digunakan dan simpan sesuai kebutuhan produknya."
+	}
+	return &dto.SpoilageAssessment{
+		RiskLevel:        riskLevel,
+		VisualCondition:  visualCondition,
+		StorageLocation:  storageLocation,
+		Recommendation:   recommendation,
+		SafetyDisclaimer: "Indikator ini hanya berdasarkan foto dan lokasi simpan yang dipilih. Foto tidak dapat memastikan makanan aman dikonsumsi.",
+	}
 }
 
 func estimateExpiry(category string, now time.Time) (time.Time, string) {
@@ -349,10 +399,13 @@ func toResponse(item *domain.ExpirelyItem) *dto.ItemResponse {
 
 // geminiVisionResult holds the parsed JSON from Gemini's vision response.
 type aiVisionResult struct {
-	NamaProduk         string `json:"nama_produk"`
-	AdaTanggalTercetak bool   `json:"ada_tanggal_tercetak"`
-	ExpiryDate         string `json:"expiry_date"`
-	Kategori           string `json:"kategori"`
+	NamaProduk             string `json:"nama_produk"`
+	AdaTanggalTercetak     bool   `json:"ada_tanggal_tercetak"`
+	ExpiryDate             string `json:"expiry_date"`
+	Kategori               string `json:"kategori"`
+	KondisiVisual          string `json:"kondisi_visual"`
+	RisikoPembusukan       string `json:"risiko_pembusukan"`
+	RekomendasiPenyimpanan string `json:"rekomendasi_penyimpanan"`
 }
 
 // geminiContentResponse is the top-level Gemini API response shape.
@@ -432,17 +485,20 @@ func nextGeminiKey() (string, error) {
 }
 
 // geminiVisionPrompt is the system prompt for photo recognition.
-const geminiVisionPrompt = `Analisis foto produk makanan/barang rumah tangga ini.
+func geminiVisionPrompt(storageLocation string) string {
+	return fmt.Sprintf(`Analisis foto produk makanan/barang rumah tangga ini. Lokasi penyimpanan yang dilaporkan pengguna: %s.
 Kembalikan HANYA JSON dengan format:
-{"nama_produk": "nama produk", "ada_tanggal_tercetak": true/false, "expiry_date": "YYYY-MM-DD", "kategori": "kategori_barang"}
+{"nama_produk": "nama produk", "ada_tanggal_tercetak": true/false, "expiry_date": "YYYY-MM-DD", "kategori": "kategori_barang", "kondisi_visual": "normal|watch|discard|unclear", "risiko_pembusukan": "low|moderate|high", "rekomendasi_penyimpanan": "saran singkat"}
 
 Jika ada tanggal kedaluwarsa tercetak, isi expiry_date dan set ada_tanggal_tercetak: true.
 Jika tidak ada tanggal tercetak (barang segar), isi kategori dan set ada_tanggal_tercetak: false.
 Kategori yang dikenali: buah_segar, sayur_hijau, sayur_umbi, roti_tanpa_pengawet, telur_lepas, daging_segar, daging_beku, ikan_segar, susu_segar_non_uht, keju_segar.
-Hanya kembalikan JSON, tanpa teks lain.`
+Nilai kondisi visual hanya dari tanda yang benar-benar terlihat. Jangan menyatakan makanan aman dikonsumsi; bila ada jamur, lendir, kebocoran, perubahan warna ekstrem, atau kondisi tidak jelas, gunakan risiko tinggi atau sedang dan sarankan tidak mengonsumsi bila ragu. Pertimbangkan lokasi penyimpanan sebagai konteks, tetapi jangan mengarang suhu atau durasi simpan.
+Hanya kembalikan JSON, tanpa teks lain.`, storageLocation)
+}
 
 // callAIVisionBase64 sends base64-encoded image data to Gemini Vision.
-func callAIVisionBase64(ctx context.Context, base64Data, mimeType string) (*aiVisionResult, error) {
+func callAIVisionBase64(ctx context.Context, base64Data, mimeType, storageLocation string) (*aiVisionResult, error) {
 	apiKey, err := nextGeminiKey()
 	if err != nil {
 		return nil, err
@@ -459,13 +515,13 @@ func callAIVisionBase64(ctx context.Context, base64Data, mimeType string) (*aiVi
 						},
 					},
 					{
-						"text": geminiVisionPrompt,
+						"text": geminiVisionPrompt(storageLocation),
 					},
 				},
 			},
 		},
 		"generationConfig": map[string]interface{}{
-			"maxOutputTokens": 1024,
+			"maxOutputTokens":  1024,
 			"responseMimeType": "application/json",
 			"thinkingConfig": map[string]interface{}{
 				"thinkingLevel": "minimal",
@@ -553,7 +609,7 @@ func callAIRecommendation(ctx context.Context, productNames []string) ([]string,
 			},
 		},
 		"generationConfig": map[string]interface{}{
-			"maxOutputTokens": 1024,
+			"maxOutputTokens":  1024,
 			"responseMimeType": "application/json",
 			"thinkingConfig": map[string]interface{}{
 				"thinkingLevel": "minimal",

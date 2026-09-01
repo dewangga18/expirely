@@ -1,8 +1,13 @@
+import type { StorageLocation, SpoilageAssessment } from '../types';
+
 import { useRef, useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
+import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
+import TextField from '@mui/material/TextField';
 import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
@@ -24,6 +29,13 @@ import { createFromPhoto } from '../api';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+const STORAGE_LOCATIONS: StorageLocation[] = [
+  'room_temperature',
+  'refrigerator',
+  'freezer',
+  'pantry',
+  'unknown',
+];
 
 type Props = {
   open: boolean;
@@ -44,6 +56,8 @@ export function PhotoUploadDialog({ open, onClose, onItemCreated }: Props) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
+  const [storageLocation, setStorageLocation] = useState<StorageLocation>('unknown');
+  const [assessment, setAssessment] = useState<SpoilageAssessment | null>(null);
 
   const reset = useCallback(() => {
     setPreview(null);
@@ -51,6 +65,8 @@ export function PhotoUploadDialog({ open, onClose, onItemCreated }: Props) {
     setError(null);
     setProgress(0);
     setUploading(false);
+    setStorageLocation('unknown');
+    setAssessment(null);
   }, []);
 
   const handleClose = useCallback(() => {
@@ -111,7 +127,11 @@ export function PhotoUploadDialog({ open, onClose, onItemCreated }: Props) {
       setProgress(30);
 
       setProgress(70);
-      const item = await createFromPhoto({ photo_base64: base64Data, mime_type: mimeType });
+      const item = await createFromPhoto({
+        photo_base64: base64Data,
+        mime_type: mimeType,
+        storage_location: storageLocation,
+      });
       setProgress(100);
 
       toast.success(
@@ -121,15 +141,16 @@ export function PhotoUploadDialog({ open, onClose, onItemCreated }: Props) {
         })
       );
 
-      reset();
-      onClose();
+      setAssessment(item.spoilage_assessment ?? null);
+      setSelectedFile(null);
+      setPreview(null);
       onItemCreated?.();
     } catch (err) {
       setError(err instanceof Error ? err.message : t('photoUpload.errors.recognitionFailed'));
     } finally {
       setUploading(false);
     }
-  }, [selectedFile, preview, t, reset, onClose, onItemCreated]);
+  }, [selectedFile, preview, storageLocation, t, onItemCreated]);
 
   return (
     <MotionDialog open={open} onClose={handleClose} fullScreen={isMobile} fullWidth maxWidth="sm">
@@ -148,6 +169,22 @@ export function PhotoUploadDialog({ open, onClose, onItemCreated }: Props) {
 
       <DialogContent dividers sx={{ p: { xs: 2, md: 3 } }}>
         <Stack spacing={3}>
+          {!assessment && (
+            <TextField
+              select
+              fullWidth
+              label={t('photoUpload.storage.label')}
+              value={storageLocation}
+              onChange={(event) => setStorageLocation(event.target.value as StorageLocation)}
+              helperText={t('photoUpload.storage.helper')}
+            >
+              {STORAGE_LOCATIONS.map((location) => (
+                <MenuItem key={location} value={location}>
+                  {t(`photoUpload.storage.options.${location}`)}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
           {/* Upload area */}
           {!preview && (
             <Box
@@ -267,11 +304,31 @@ export function PhotoUploadDialog({ open, onClose, onItemCreated }: Props) {
               <Typography variant="body2">{error}</Typography>
             </Box>
           )}
+
+          {assessment && (
+            <Alert
+              severity={
+                assessment.risk_level === 'high'
+                  ? 'error'
+                  : assessment.risk_level === 'moderate'
+                    ? 'warning'
+                    : 'success'
+              }
+            >
+              <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
+                {t(`spoilage.risk.${assessment.risk_level}`)}
+              </Typography>
+              <Typography variant="body2" sx={{ mb: 0.5 }}>
+                {t(`spoilage.condition.${assessment.visual_condition}`)} {assessment.recommendation}
+              </Typography>
+              <Typography variant="caption">{assessment.safety_disclaimer}</Typography>
+            </Alert>
+          )}
         </Stack>
       </DialogContent>
 
       <DialogActions>
-        {preview && !uploading && (
+        {preview && !uploading && !assessment && (
           <Button
             variant="contained"
             startIcon={<Iconify icon="solar:gallery-add-bold" />}
@@ -279,6 +336,11 @@ export function PhotoUploadDialog({ open, onClose, onItemCreated }: Props) {
             loading={uploading}
           >
             {t('photoUpload.recognize')}
+          </Button>
+        )}
+        {assessment && (
+          <Button variant="contained" onClick={handleClose}>
+            {tCommon('actions.close')}
           </Button>
         )}
       </DialogActions>

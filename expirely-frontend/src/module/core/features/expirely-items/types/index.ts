@@ -16,6 +16,22 @@ export type ExpirelyItem = {
   source: ItemSource;
   created_at: string;
   updated_at: string;
+  spoilage_assessment?: SpoilageAssessment;
+};
+
+export type StorageLocation =
+  | 'room_temperature'
+  | 'refrigerator'
+  | 'freezer'
+  | 'pantry'
+  | 'unknown';
+
+export type SpoilageAssessment = {
+  risk_level: 'low' | 'moderate' | 'high';
+  visual_condition: 'normal' | 'watch' | 'discard' | 'unclear';
+  storage_location: StorageLocation;
+  recommendation: string;
+  safety_disclaimer: string;
 };
 
 export type CreateItemPayload = {
@@ -35,6 +51,7 @@ export type UpdateItemPayload = {
 export type CreateFromPhotoPayload = {
   photo_base64: string;
   mime_type: string;
+  storage_location: StorageLocation;
 };
 
 export type Recommendation = {

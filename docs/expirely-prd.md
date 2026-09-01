@@ -17,7 +17,7 @@ Individu atau rumah tangga yang rutin belanja groceries dan ingin mengurangi foo
 ## 5. Fitur — In Scope (MVP, 3-5 hari)
 | # | Fitur | Deskripsi |
 |---|---|---|
-| 1 | Add item via foto | 1 AI call (vision) → identifikasi nama produk + baca tanggal expired, atau kategori kalau tidak ada tanggal tercetak |
+| 1 | Add item via foto | 1 AI call (vision) → identifikasi nama produk + baca tanggal expired, atau kategori kalau tidak ada tanggal tercetak. User memilih lokasi simpan; AI menampilkan indikator risiko pembusukan dari kondisi visual + konteks lokasi. |
 | 2 | Manual edit fallback | Koreksi nama/tanggal kalau hasil AI salah |
 | 3 | Dashboard | List item sorted by urgensi expiry, color-coded (merah/kuning/hijau) — logic deterministik |
 | 4 | AI recommendation | Saran resep/pemakaian saat ada barang mau expired |
@@ -47,7 +47,7 @@ Lihat bagian 5 (fitur #1-6): add item, manual edit, dashboard, AI recommendation
 
 ## 7. User Flow (Core Loop)
 1. User foto barang
-2. AI mengembalikan: `{nama_produk, ada_tanggal_tercetak, expiry_date}` ATAU `{nama_produk, ada_tanggal_tercetak: false, kategori}`
+2. User memilih lokasi simpan (suhu ruang, kulkas, freezer, pantry, atau tidak yakin). AI mengembalikan: `{nama_produk, ada_tanggal_tercetak, expiry_date}` ATAU `{nama_produk, ada_tanggal_tercetak: false, kategori}`, serta indikator risiko pembusukan dari kondisi visual + lokasi simpan.
 3. Jika kategori (tanpa tanggal) → sistem hitung estimasi expiry dari Dataset Shelf-Life
 4. Item masuk dashboard, status "Dari kemasan" / "Perkiraan"
 5. User bisa koreksi manual kapan saja
@@ -67,6 +67,9 @@ Lihat bagian 5 (fitur #1-6): add item, manual edit, dashboard, AI recommendation
 **Recommendation (dipanggil saat ada item mendekati expiry):**
 Input: daftar nama produk yang mendekati expiry.
 Output: 1 saran singkat (nama resep/pemakaian).
+
+**Spoilage-risk indicator (saat recognition):**
+Input tambahan: lokasi simpan yang dipilih user. Output: `low`, `moderate`, atau `high`, kondisi visual, dan saran penyimpanan/pemakaian. Ini hanya indikator untuk mengurangi food waste, **bukan** jaminan makanan aman dikonsumsi.
 
 ## 9. Business Model
 Freemium ad-supported — banner ads selalu tampil sebagai revenue dasar. Recognition & recommendation dibatasi kuota harian (misal 2x/hari); kuota habis → user nonton rewarded ad untuk tambahan kuota. Input manual tetap gratis unlimited. Tidak ada subscription tier.

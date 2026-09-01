@@ -45,8 +45,9 @@ func (h *Handler) CreateManual(c *gin.Context) {
 func (h *Handler) CreateFromPhoto(c *gin.Context) {
 	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, 15<<20)
 	var req struct {
-		PhotoBase64 string `json:"photo_base64"`
-		MimeType    string `json:"mime_type"`
+		PhotoBase64     string `json:"photo_base64"`
+		MimeType        string `json:"mime_type"`
+		StorageLocation string `json:"storage_location" binding:"omitempty,oneof=room_temperature refrigerator freezer pantry unknown"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		var maxBytesErr *http.MaxBytesError
@@ -85,7 +86,7 @@ func (h *Handler) CreateFromPhoto(c *gin.Context) {
 		return
 	}
 
-	result, err := h.svc.CreateFromPhoto(c.Request.Context(), middleware.MustGetUserID(c), req.PhotoBase64, req.MimeType)
+	result, err := h.svc.CreateFromPhoto(c.Request.Context(), middleware.MustGetUserID(c), req.PhotoBase64, req.MimeType, req.StorageLocation)
 	if err != nil {
 		h.handleError(c, err)
 		return

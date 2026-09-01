@@ -5,21 +5,23 @@
 
 ## Kesimpulan
 
-Core flow yang tidak membutuhkan credential eksternal sudah siap dan terverifikasi. Manual item lifecycle, ownership per user, statistik, kuota, rewarded-ad mock, seed data, error state, dan UI mobile/desktop telah lulus test. Google Sign-In dan dua fitur Gemini belum dapat diuji live karena credential Firebase/Gemini belum diisi.
+Core flow MVP sudah siap dan terverifikasi. Manual item lifecycle, ownership per user, statistik, kuota, rewarded-ad mock, seed data, error state, dan UI mobile/desktop telah lulus test. Google Sign-In Firebase telah diuji live. Gemini juga telah diuji live melalui endpoint aplikasi dengan fixture kemasan bertanggal dan barang segar, serta recommendation untuk item yang mendekati expiry.
 
 ## Status per fitur
 
 | Fitur | Status | Bukti/keterangan |
 |---|---|---|
-| Google-only sign-in | Siap di kode | Email/password routes tidak dipasang; perlu Firebase credential untuk uji live |
+| Google-only sign-in | Lulus live | Firebase memverifikasi token Google dan backend membuat sesi aplikasi |
 | Pemulihan sesi JWT | Terverifikasi lokal | Shared Axios + `sessionStorage` dan `/auth/me` berhasil dengan JWT test singkat |
 | Tambah/edit item manual | Lulus | HTTP integration test mencakup create dan update |
 | Detail dan list item | Lulus | Data PostgreSQL nyata, terurut tanggal terdekat |
 | Mark consumed/wasted | Lulus | Status lifecycle diuji; wasted memakai confirmation dialog |
 | Isolasi antar-user | Lulus | User lain mendapat `404` saat membaca/mengubah item |
 | Statistik dashboard | Lulus | Scope per user dan data seed konsisten |
-| Foto dari kamera/gallery | UI + validasi lulus | AI recognition live menunggu `AI_API_KEY` |
-| Recommendation urgent | Siap di kode | Server hanya menerima item aktif milik user dengan expiry maksimal 7 hari; AI live menunggu key |
+| Foto dari kamera/gallery | Lulus live dengan fixture | Kemasan menghasilkan tanggal exact; barang segar menghasilkan kategori + estimasi shelf-life. Tetap lakukan demo test memakai foto perangkat nyata. |
+| Indikator pembusukan foto + lokasi simpan | Lulus live dengan fixture | AI mengembalikan kondisi visual, level risiko, konteks lokasi simpan, saran, dan disclaimer bahwa hasil bukan jaminan keamanan pangan. |
+| AI recommendation | Lulus live | Recommendation berhasil untuk item yang benar-benar masuk rentang urgent (≤7 hari). |
+| Recommendation urgent | Lulus live | Server hanya menerima item aktif milik user dengan expiry maksimal 7 hari; Gemini menghasilkan saran untuk item valid. |
 | Kuota per user | Lulus | Konsumsi atomik, 2 base use/hari per fitur |
 | Rewarded-ad mock | Lulus | Bonus +1 per aksi, maksimal 3 bonus per fitur/hari |
 | Banner sponsor mock | Lulus | Placeholder yang sengaja dibatasi dan tidak menyamar sebagai iklan nyata |
@@ -72,13 +74,14 @@ Browser smoke memakai backend + database nyata dan JWT test sementara:
 
 Catatan: smoke dilakukan dengan Chromium headless. Safari iOS dan Chrome Android pada perangkat fisik tetap perlu diuji sebelum production, terutama camera input dan Google popup/redirect.
 
-## Yang masih menunggu konfigurasi eksternal
+## Verifikasi dan konfigurasi yang masih tersisa
 
-1. Isi Firebase frontend/backend mengikuti [`expirely-google-auth-setup.md`](expirely-google-auth-setup.md), lalu uji user baru, user lama, refresh, logout, dan mobile.
-2. Isi `AI_API_KEY`/`AI_MODEL`, lalu validasi satu foto kemasan, satu barang segar, recommendation, quota exhausted, dan rollback kuota saat provider gagal.
-3. Credential Kubernetes lama pernah tersimpan di repository dan file aktif sudah diganti template aman. **Revoke/rotate bearer token lama di cluster** karena penghapusan file tidak membersihkan git history.
-4. Docker image belum dibangun di mesin audit karena Docker tidak tersedia.
-5. Set `FRONTEND_URL` production ke origin HTTPS frontend yang tepat. Jangan gunakan wildcard.
+1. Uji user baru, user lama, refresh, logout, serta Google popup/redirect pada perangkat fisik.
+2. Uji foto kemasan dan barang segar dari kamera perangkat nyata; fixture sintetis hanya membuktikan integrasi, bukan akurasi terhadap semua kondisi foto dunia nyata.
+3. Uji quota exhausted dan rollback quota ketika provider AI gagal pada environment lokal terisolasi.
+4. Credential Kubernetes lama pernah tersimpan di repository dan file aktif sudah diganti template aman. **Revoke/rotate bearer token lama di cluster** karena penghapusan file tidak membersihkan git history.
+5. Docker image belum dibangun di mesin audit karena Docker tidak tersedia.
+6. Set `FRONTEND_URL` production ke origin HTTPS frontend yang tepat. Jangan gunakan wildcard.
 
 ## Menjalankan lokal
 
@@ -106,8 +109,8 @@ Buka `http://localhost:8081`. Hindari `source expirily-backend/.env`; nilai mult
 - [x] Mobile 320/360, tablet, dan desktop tanpa horizontal overflow
 - [x] Tidak ada silent mock yang membuat aksi palsu terlihat berhasil
 - [x] Formatter, lint, typecheck, build, test, dan vet lulus
-- [ ] Google login live dengan Firebase nyata
-- [ ] Recognition + recommendation live dengan Gemini nyata
+- [x] Google login live dengan Firebase nyata
+- [x] Recognition + recommendation live dengan Gemini nyata (fixture terkontrol)
+- [x] Indikator pembusukan berbasis kondisi foto + lokasi simpan (fixture terkontrol)
 - [ ] Device test Safari iOS dan Chrome Android
 - [ ] Rotasi credential Kubernetes lama
-

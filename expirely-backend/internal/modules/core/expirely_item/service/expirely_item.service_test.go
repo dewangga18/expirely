@@ -43,3 +43,24 @@ func TestEstimateExpiryFallsBackToDefault(t *testing.T) {
 		t.Fatalf("expected %s, got %s", want, expiry)
 	}
 }
+
+func TestNormalizeStorageLocation(t *testing.T) {
+	location, err := normalizeStorageLocation(" Refrigerator ")
+	if err != nil || location != "refrigerator" {
+		t.Fatalf("expected normalized refrigerator, got %q, err=%v", location, err)
+	}
+	if _, err := normalizeStorageLocation("garage"); err == nil {
+		t.Fatal("expected unsupported storage location to fail")
+	}
+}
+
+func TestBuildSpoilageAssessmentForcesHighRiskWhenDiscardIsVisible(t *testing.T) {
+	assessment := buildSpoilageAssessment(&aiVisionResult{
+		KondisiVisual:          "discard",
+		RisikoPembusukan:       "low",
+		RekomendasiPenyimpanan: "Jangan dikonsumsi bila ragu.",
+	}, "refrigerator")
+	if assessment.RiskLevel != "high" || assessment.StorageLocation != "refrigerator" {
+		t.Fatalf("unexpected assessment: %+v", assessment)
+	}
+}

@@ -97,10 +97,34 @@
     "analyzing": "Menganalisis foto dengan AI...",
     "removePreview": "Hapus foto yang dipilih",
     "success": "{{name}} dikenali! Kedaluwarsa dalam {{days}} hari.",
+    "storage": {
+      "label": "Disimpan di mana?",
+      "helper": "Dipakai AI sebagai konteks risiko pembusukan.",
+      "options": {
+        "room_temperature": "Suhu ruang",
+        "refrigerator": "Kulkas",
+        "freezer": "Freezer",
+        "pantry": "Lemari makanan",
+        "unknown": "Tidak yakin"
+      }
+    },
     "errors": {
       "invalidType": "Tipe file tidak valid. Gunakan JPEG, PNG, WebP, atau GIF.",
       "tooLarge": "File terlalu besar. Maksimal 10MB.",
       "recognitionFailed": "AI tidak bisa mengenali produk. Coba foto lain atau tambahkan manual."
+    }
+  },
+  "spoilage": {
+    "risk": {
+      "low": "Risiko pembusukan rendah",
+      "moderate": "Perlu segera diperhatikan",
+      "high": "Risiko pembusukan tinggi"
+    },
+    "condition": {
+      "normal": "Kondisi visual tampak normal.",
+      "watch": "Ada kondisi visual yang perlu diperhatikan.",
+      "discard": "Terlihat tanda yang perlu dihindari untuk dikonsumsi.",
+      "unclear": "Kondisi visual belum dapat dinilai dengan jelas."
     }
   },
   "errors": {

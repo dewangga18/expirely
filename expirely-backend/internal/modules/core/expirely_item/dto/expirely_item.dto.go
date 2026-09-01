@@ -25,15 +25,26 @@ type UpdateStatusRequest struct {
 
 // ItemResponse is the API response shape for a single item.
 type ItemResponse struct {
-	ID          string    `json:"id"`
-	NamaProduk  string    `json:"nama_produk"`
-	Kategori    *string   `json:"kategori,omitempty"`
-	ExpiryDate  string    `json:"expiry_date"`
-	IsEstimated bool      `json:"is_estimated"`
-	Status      string    `json:"status"`
-	Source      string    `json:"source"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	ID                 string              `json:"id"`
+	NamaProduk         string              `json:"nama_produk"`
+	Kategori           *string             `json:"kategori,omitempty"`
+	ExpiryDate         string              `json:"expiry_date"`
+	IsEstimated        bool                `json:"is_estimated"`
+	Status             string              `json:"status"`
+	Source             string              `json:"source"`
+	CreatedAt          time.Time           `json:"created_at"`
+	UpdatedAt          time.Time           `json:"updated_at"`
+	SpoilageAssessment *SpoilageAssessment `json:"spoilage_assessment,omitempty"`
+}
+
+// SpoilageAssessment is a photo-time risk indicator. It is not persisted and
+// must never be interpreted as a food-safety guarantee.
+type SpoilageAssessment struct {
+	RiskLevel        string `json:"risk_level"`
+	VisualCondition  string `json:"visual_condition"`
+	StorageLocation  string `json:"storage_location"`
+	Recommendation   string `json:"recommendation"`
+	SafetyDisclaimer string `json:"safety_disclaimer"`
 }
 
 // ItemListResponse wraps a paginated list.
