@@ -2,16 +2,23 @@
   "home": "Home",
   "expirely": {
     "root": "Expirely",
-    "items": "Items"
+    "items": "Household Items"
+  },
+  "settings": {
+    "root": "Settings",
+    "branches": "Branches",
+    "roles": "Roles & Permissions",
+    "users": "User Management",
+    "translationOverride": "Translation Overrides"
   },
   "account": {
     "profile": "Profile",
     "theme": "Theme",
-    "logout": "Logout",
+    "logout": "Log Out",
     "logoutConfirm": {
-      "title": "Logout Confirmation",
+      "title": "Confirm Logout",
       "description": "Are you sure you want to log out?",
-      "confirm": "Logout"
+      "confirm": "Log Out"
     },
     "notifications": {
       "title": "Notifications",

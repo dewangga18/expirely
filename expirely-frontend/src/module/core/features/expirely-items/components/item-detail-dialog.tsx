@@ -116,26 +116,40 @@ export function ItemDetailDialog({
                   gridColumn: { md: '1 / -1' },
                   p: { xs: 2, md: 2.5 },
                   border: '1px solid',
-                  borderColor: 'warning.light',
+                  borderColor: 'warning.main',
                   borderRadius: 2.5,
-                  bgcolor: 'warning.lighter',
+                  bgcolor: 'background.neutral',
                 }}
               >
                 <Stack direction="row" spacing={1.25} alignItems="flex-start">
-                  <Iconify icon="solar:info-circle-bold" width={22} color="warning.dark" />
+                  <Iconify
+                    icon="solar:info-circle-bold"
+                    width={22}
+                    color="warning.main"
+                    sx={{ mt: 0.25, flexShrink: 0 }}
+                  />
                   <Box sx={{ minWidth: 0 }}>
-                    <Typography variant="subtitle2">
+                    <Typography variant="subtitle2" color="warning.main" fontWeight={700}>
                       {t('estimateBasis.title', { count: item.estimate_basis.estimate_days })}
                     </Typography>
-                    <Typography variant="body2" sx={{ mt: 0.5, color: 'text.secondary' }}>
+                    <Typography
+                      variant="body2"
+                      color="text.primary"
+                      sx={{ mt: 0.5, lineHeight: 1.5 }}
+                    >
                       {t(`estimateBasis.tips.${item.estimate_basis.category}.storage`)}
                     </Typography>
-                    <Typography variant="body2" sx={{ mt: 0.75, color: 'text.secondary' }}>
+                    <Typography
+                      variant="body2"
+                      color="text.primary"
+                      sx={{ mt: 0.75, lineHeight: 1.5 }}
+                    >
                       {t(`estimateBasis.tips.${item.estimate_basis.category}.useBy`)}
                     </Typography>
                     <Typography
                       variant="caption"
-                      sx={{ display: 'block', mt: 1.25, color: 'text.secondary' }}
+                      color="text.secondary"
+                      sx={{ display: 'block', mt: 1.25, lineHeight: 1.5 }}
                     >
                       {t('estimateBasis.disclaimer')}
                     </Typography>
@@ -148,8 +162,8 @@ export function ItemDetailDialog({
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: 0.5,
-                        mt: 1,
-                        color: 'primary.dark',
+                        mt: 1.25,
+                        color: 'primary.main',
                         fontSize: 13,
                         fontWeight: 700,
                         textDecoration: 'none',

@@ -1,35 +1,236 @@
 {
-  "pageTitle": "Kurangi makanan terbuang",
-  "header": { "signIn": "Masuk" },
+  "pageTitle": "Expirely — Manajemen Kedaluwarsa & Inventaris Pintar Berbasis AI",
+  "header": {
+    "signIn": "Masuk",
+    "dashboard": "Buka Dashboard",
+    "nav": {
+      "features": "Fitur",
+      "demo": "Demo Interaktif",
+      "howItWorks": "Cara Kerja",
+      "calculator": "Kalkulator Hemat",
+      "sponsors": "Sponsor & Ads",
+      "testimonials": "Ulasan",
+      "faq": "FAQ"
+    }
+  },
   "hero": {
-    "eyebrow": "Kurangi mubazir, satu kebiasaan kecil setiap hari",
+    "eyebrow": "Smart Household & Office Inventory with Gemini AI",
     "title": "Makanan yang baik pantas dipakai, bukan terlupakan.",
-    "description": "Expirely membantu Anda mengingat apa yang ada di rumah, kapan harus dipakai, dan ide sederhana sebelum terlambat.",
-    "primaryCta": "Mulai gratis",
-    "secondaryCta": "Lihat cara kerjanya",
-    "reassurance": "Cepat dimulai. Cukup foto kemasan atau tambah barang yang sudah ada."
+    "description": "Expirely membantu Anda memantau stok bahan makanan, membaca tanggal kadaluwarsa otomatis via foto AI, dan memberi ide resep sebelum makanan terbuang.",
+    "primaryCta": "Mulai Gratis Sekarang",
+    "secondaryCta": "Coba Demo Interaktif",
+    "reassurance": "Bebas biaya. Foto kemasan atau catat inventaris rumah/kantor dalam hitungan detik."
   },
   "preview": {
-    "title": "Dapur hari ini",
+    "title": "Dapur Hari Ini",
     "subtitle": "3 barang perlu diperhatikan",
-    "itemOne": "Susu UHT",
+    "itemOne": "Susu UHT Full Cream 1L",
     "itemOneDetail": "Gunakan hari ini",
-    "itemTwo": "Apel hijau",
+    "itemTwo": "Roti Tawar Gandum",
     "itemTwoDetail": "2 hari lagi",
-    "itemThree": "Telur",
+    "itemThree": "Telur Ayam Organik",
     "itemThreeDetail": "Masih aman",
     "tipTitle": "Ide dari Expirely AI",
-    "tipDescription": "Gunakan susu dan apel untuk smoothie pagi ini."
+    "tipDescription": "Gunakan susu dan roti tawar untuk buat French Toast lezat sarapan pagi ini."
   },
-  "steps": {
-    "eyebrow": "Sederhana dari awal",
-    "title": "Lebih sedikit lupa, lebih banyak terpakai.",
-    "description": "Satu alur ringan untuk menjaga stok rumah tetap terasa terkendali.",
+  "demo": {
+    "eyebrow": "Eksplorasi Fitur Interaktif",
+    "title": "Simulasi Fitur Utama Expirely",
+    "description": "Coba simulasi interaktif di bawah ini untuk melihat bagaimana Gemini AI membantu mengelola dapur dan stok bahan makanan Anda secara otomatis.",
+    "tabs": {
+      "scanner": "AI Vision Scan",
+      "tracker": "Urgency Tracker",
+      "recipe": "Rekomendasi AI",
+      "quota": "Model Freemium"
+    },
+    "scanner": {
+      "title": "Pengenalan Kemasan & Barang Segar",
+      "subtitle": "1 foto untuk baca nama produk, tanggal kedaluwarsa, atau estimasi shelf-life.",
+      "storageLabel": "Pilih Lokasi Simpan:",
+      "locations": {
+        "room": "Suhu Ruang",
+        "fridge": "Kulkas",
+        "freezer": "Freezer",
+        "pantry": "Pantry"
+      },
+      "scannedProduct": "Susu UHT Full Cream 1L",
+      "detectedDate": "Tanggal Kedaluwarsa: 15 Sep 2026",
+      "detectionMethod": "Deteksi Otomatis Kemasan (OCR AI)",
+      "freshProduct": "Pisang Cavendish",
+      "estimatedDays": "Estimasi Kesegaran: ~5 hari lagi",
+      "estimateMethod": "Referensi Dataset Shelf-Life A",
+      "spoilageRisk": "Tingkat Risiko Pembusukan:",
+      "riskLow": "Rendah (Penyimpanan Optimal)",
+      "riskModerate": "Sedang (Konsumsi 2-3 hari)",
+      "riskHigh": "Tinggi (Segera Habiskan)"
+    },
+    "tracker": {
+      "title": "Dashboard Urgensi Warna Berkode",
+      "subtitle": "Sistem menyusun barang berdasarkan prioritas tanggal agar Anda tahu apa yang harus dipakai lebih dulu.",
+      "status": {
+        "expired": "Kedaluwarsa",
+        "urgent": "Mendesak (0–2 Hari)",
+        "warning": "Peringatan (3–7 Hari)",
+        "safe": "Aman (>7 Hari)"
+      },
+      "items": [
+        { "name": "Yogurt Blueberry", "date": "Hari ini", "status": "urgent", "location": "Kulkas" },
+        { "name": "Roti Tawar", "date": "Besok", "status": "urgent", "location": "Pantry" },
+        { "name": "Keju Cheddar", "date": "5 Hari lagi", "status": "warning", "location": "Kulkas" },
+        { "name": "Beras Premium 5kg", "date": "45 Hari lagi", "status": "safe", "location": "Pantry" }
+      ]
+    },
+    "recipe": {
+      "title": "Rekomendasi Resep AI Bebas Food Waste",
+      "subtitle": "Gemini AI menganalisis bahan yang mendekati kedaluwarsa dan memberikan saran masakan praktis.",
+      "expiringIngredients": "Bahan Mendekati Kedaluwarsa: Susu UHT, Pisang, & Keju Cheddar",
+      "aiSuggestionTitle": "Rekomendasi AI: Banana Cheese Pancake & Milkshake",
+      "aiSuggestionDesc": "Gabungkan pisang matang dan susu UHT untuk adonan pancake lembut bertabur keju, serta milkshake dingin segar untuk sarapan tanpa bahan terbuang."
+    },
+    "quota": {
+      "title": "Sistem Kuota Harian & Ads (Freemium)",
+      "subtitle": "Input manual gratis tanpa batas. Fitur pemindaian AI & rekomendasi resep dilengkapi kuota harian.",
+      "dailyQuotaLabel": "Sisa Kuota AI Hari Ini: 2 / 2 Scan",
+      "rewardedAdInfo": "Kuota habis? Tonton rewarded ad singkat untuk mendapatkan tambahan kuota scan AI!",
+      "unlimitedManual": "100% Bebas untuk pencatatan manual & pemantauan dashboard."
+    }
+  },
+  "features": {
+    "eyebrow": "Kemampuan Utama",
+    "title": "Dirancang untuk Dapur Lebih Tenang dan Hemat",
+    "description": "Solusi lengkap pencatatan inventaris rumah tangga berbasis teknologi AI terkini.",
     "items": [
-      { "title": "Foto kemasan", "description": "Ambil foto produk untuk membantu AI membaca nama dan tanggalnya." },
-      { "title": "Lihat yang mendesak", "description": "Status jelas membantu Anda tahu apa yang sebaiknya dipakai lebih dulu." },
-      { "title": "Dapatkan ide", "description": "Minta saran penggunaan sederhana sebelum makanan terbuang." }
+      {
+        "title": "Pengenalan AI Vision 1-Click",
+        "description": "Cukup ambil foto kemasan. Gemini AI otomatis mengenali nama produk dan membaca tanggal kadaluwarsa."
+      },
+      {
+        "title": "Estimasi Shelf-Life Barang Segar",
+        "description": "Untuk buah, sayur, dan daging tanpa tanggal cetak, Expirely mengestimasi masa simpan dari referensi ilmiah."
+      },
+      {
+        "title": "Analisis Risiko Pembusukan",
+        "description": "Evaluasi risiko pembusukan berdasarkan kondisi visual dan lokasi penyimpanan (Kulkas, Freezer, Pantry)."
+      },
+      {
+        "title": "Dashboard Urgensi Pintar",
+        "description": "Pengelompokan barang berkode warna (Merah/Kuning/Hijau) yang otomatis terurut dari paling mendesak."
+      },
+      {
+        "title": "Saran Resep Pencegah Food Waste",
+        "description": "Rekomendasi AI otomatis yang memadukan bahan-bahan hampir kadaluwarsa menjadi masakan lezat."
+      },
+      {
+        "title": "Akses Gratis & Kuota Harian",
+        "description": "Pencatatan manual gratis selamanya, dilengkapi kuota harian AI yang dapat ditambah melalui rewarded ads."
+      }
     ]
   },
-  "footer": { "note": "Dibuat untuk dapur yang lebih tenang dan kebiasaan yang lebih baik." }
+  "calculator": {
+    "eyebrow": "Kalkulator Penghematan",
+    "title": "Berapa Banyak Uang yang Bisa Anda Hemat?",
+    "description": "Rata-rata rumah tangga membuang 15–20% belanjaan karena lupa tanggal kedaluwarsa. Lihat potensi penghematan Anda bersama Expirely.",
+    "monthlyLabel": "Pengeluaran Belanja Bulanan (Rp):",
+    "yearlySavings": "Estimasi Penghematan Tahunan:",
+    "foodSavedLabel": "Makanan Terselamatkan:",
+    "foodSavedValue": "~24–40 item per tahun",
+    "cta": "Mulai Hemat Hari Ini"
+  },
+  "ads": {
+    "eyebrow": "Sponsor & Business Model",
+    "title": "Placeholder Ads & Sponsored Partnership",
+    "description": "Expirely mengadopsi model Freemium ad-supported. Pengguna gratis menikmati fitur pemantauan tanpa batas diselingi banner ads & rekomendasi resep sponsor.",
+    "bannerAdLabel": "Slot Iklan Banner (Placeholder)",
+    "bannerAdTitle": "Grocery Partner Deal: Diskon 30% Bahan Makanan Segar!",
+    "bannerAdDesc": "Dapatkan promo diskon belanja bahan makanan mingguan di supermarket partner Expirely terdekat.",
+    "sponsoredLabel": "Slot Rekomendasi Sponsor Brand",
+    "sponsoredTitle": "Sponsored Recipe by Brand Partner",
+    "sponsoredDesc": "Masak bahan mendesak menggunakan Bumbu Dapur Pilihan. Dapatkan rasa lezat maksimal dengan nol bahan terbuang.",
+    "cta": "Pelajari Peluang Kemitraan Brand"
+  },
+  "testimonials": {
+    "eyebrow": "Pengalaman Pengguna",
+    "title": "Dipercaya Pengguna Rumah Tangga & Kantoran",
+    "description": "Lihat bagaimana Expirely membantu mengurangi pemborosan belanjaan di dapur rumah maupun kantor.",
+    "items": [
+      {
+        "name": "Sarah Amalia",
+        "role": "Ibu Rumah Tangga, Jakarta",
+        "comment": "Dulu sering banget buang susu dan roti karena kelupaan tanggalnya. Pakai Expirely tinggal foto pas belanja, langsung dapat pengingat dan ide resep!",
+        "rating": 5
+      },
+      {
+        "name": "Budi Santoso",
+        "role": "Office Manager, Surabaya",
+        "comment": "Sangat membantu kelola stok pantry kantor. Kopi, krimer, dan snack tidak ada lagi yang kedaluwarsa begitu saja. Penghematan anggaran sangat terasa.",
+        "rating": 5
+      },
+      {
+        "name": "Rina Wijaya",
+        "role": "Home Chef & Food Blogger",
+        "comment": "Fitur AI resepnya jenius banget! Sisa buah matang dan keju langsung disulap jadi pancake lezat tanpa ada bahan makanan yang mubazir.",
+        "rating": 5
+      }
+    ]
+  },
+  "impact": {
+    "eyebrow": "Dampak Riil",
+    "title": "Mengapa Memilih Expirely?",
+    "stats": [
+      { "value": "30%", "label": "Pengurangan Food Waste Rumah Tangga" },
+      { "value": "Rp 1.5M+", "label": "Rata-rata Uang Terselamatkan / Tahun" },
+      { "value": "100%", "label": "Pencatatan Otomatis via Foto AI" },
+      { "value": "< 5 Detik", "label": "Waktu Tambah Barang Baru" }
+    ]
+  },
+  "steps": {
+    "eyebrow": "Sederhana Dari Awal",
+    "title": "3 Langkah Mudah Mencegah Makanan Terbuang",
+    "description": "Satu alur praktis untuk menjaga stok rumah tangga tetap terkontrol setiap hari.",
+    "items": [
+      {
+        "title": "1. Foto atau Tambah Barang",
+        "description": "Ambil foto produk atau pilih lokasi simpan. AI akan membaca detailnya secara otomatis."
+      },
+      {
+        "title": "2. Pantau Urgensi Kedaluwarsa",
+        "description": "Lihat warna indikator di dashboard untuk mengetahui barang mana yang harus segera digunakan."
+      },
+      {
+        "title": "3. Dapatkan Ide Masakan AI",
+        "description": "Terima rekomendasi resep masakan berbasis bahan yang mendesak sebelum tanggal kedaluwarsa tiba."
+      }
+    ]
+  },
+  "faq": {
+    "eyebrow": "Tanya Jawab",
+    "title": "Pertanyaan yang Sering Diajukan",
+    "items": [
+      {
+        "question": "Apakah Expirely bisa mengenali makanan segar tanpa tanggal kadaluwarsa?",
+        "answer": "Ya! Jika kemasan tidak memiliki tanggal kadaluwarsa cetak (seperti buah atau sayuran segar), Expirely menggunakan dataset ilmiah shelf-life untuk memberikan estimasi masa simpan yang akurat berdasarkan lokasi penyimpanan yang Anda pilih."
+      },
+      {
+        "question": "Bagaimana jika AI salah membaca tanggal pada kemasan?",
+        "answer": "Expirely menyediakan fitur edit manual 1-klik untuk setiap detail barang. Anda dapat dengan mudah mengoreksi nama produk, tanggal, maupun lokasi penyimpanan kapan saja."
+      },
+      {
+        "question": "Apakah aplikasi ini gratis untuk digunakan?",
+        "answer": "Expirely gratis digunakan. Fitur pencatatan dan pemantauan manual tidak terbatas. Fitur pemindaian foto AI dan rekomendasi resep memiliki kuota harian gratis yang bisa ditambah dengan menonton rewarded ads."
+      },
+      {
+        "question": "Apakah data inventaris saya aman?",
+        "answer": "Seluruh data inventaris diisolasi per akun/perusahaan secara aman. Foto yang Anda unggah hanya digunakan untuk pemrosesan AI seketika."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Siap Mengurangi Food Waste & Menghemat Belanjaan?",
+    "subtitle": "Bergabunglah sekarang dan rasakan kemudahan mengelola dapur pintar bersama Expirely Gemini AI.",
+    "button": "Mulai Bebas Biaya Sekarang"
+  },
+  "footer": {
+    "note": "Expirely — Solusi inventaris & pencegahan food waste berbasis AI untuk dapur yang lebih tenang.",
+    "rights": "Hak Cipta Dilindungi Undang-Undang."
+  }
 }

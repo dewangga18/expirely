@@ -34,11 +34,13 @@ const dashboardLayout = () => (
 
 export const dashboardRoutes: RouteObject[] = [
   {
-    path: '/',
+    path: 'dashboard',
     element: CONFIG.auth.skip ? dashboardLayout() : <AuthGuard>{dashboardLayout()}</AuthGuard>,
-    children: [
-      { element: <HomePage />, index: true },
-      { path: 'expirely/items', element: <ExpirelyItemsPage /> },
-    ],
+    children: [{ element: <HomePage />, index: true }],
+  },
+  {
+    path: 'expirely/items',
+    element: CONFIG.auth.skip ? dashboardLayout() : <AuthGuard>{dashboardLayout()}</AuthGuard>,
+    children: [{ element: <ExpirelyItemsPage />, index: true }],
   },
 ];

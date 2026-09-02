@@ -39,7 +39,7 @@ func main() {
 	// Initialize database
 	db, err := database.New(cfg.Database.GetDSN())
 	if err != nil {
-		logger.Fatal("Failed to connect to database")
+		logger.Fatal("Failed to connect to database: " + err.Error())
 	}
 	defer db.Close()
 

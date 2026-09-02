@@ -1,35 +1,236 @@
 {
-  "pageTitle": "Waste less food",
-  "header": { "signIn": "Sign in" },
+  "pageTitle": "Expirely — AI-Powered Smart Expiry & Inventory Management",
+  "header": {
+    "signIn": "Sign In",
+    "dashboard": "Open Dashboard",
+    "nav": {
+      "features": "Features",
+      "demo": "Interactive Demo",
+      "howItWorks": "How It Works",
+      "calculator": "Savings Calculator",
+      "sponsors": "Sponsors & Ads",
+      "testimonials": "Reviews",
+      "faq": "FAQ"
+    }
+  },
   "hero": {
-    "eyebrow": "Waste less, one small habit at a time",
+    "eyebrow": "Smart Household & Office Inventory with Gemini AI",
     "title": "Good food deserves to be used, not forgotten.",
-    "description": "Expirely helps you remember what is at home, when to use it, and what to make before it is too late.",
-    "primaryCta": "Start free",
-    "secondaryCta": "See how it works",
-    "reassurance": "Get started quickly. Scan a package or add an item you already have."
+    "description": "Expirely helps you monitor household food stock, auto-detect expiration dates via AI photo scanning, and receive smart recipe ideas before food goes to waste.",
+    "primaryCta": "Start Free Now",
+    "secondaryCta": "Try Interactive Demo",
+    "reassurance": "100% free to start. Snap a product photo or log household inventory in seconds."
   },
   "preview": {
-    "title": "Today’s kitchen",
+    "title": "Today's Kitchen",
     "subtitle": "3 items need attention",
-    "itemOne": "UHT milk",
+    "itemOne": "UHT Full Cream Milk 1L",
     "itemOneDetail": "Use today",
-    "itemTwo": "Green apples",
+    "itemTwo": "Whole Wheat Bread",
     "itemTwoDetail": "2 days left",
-    "itemThree": "Eggs",
+    "itemThree": "Organic Chicken Eggs",
     "itemThreeDetail": "Still safe",
-    "tipTitle": "An idea from Expirely AI",
-    "tipDescription": "Use the milk and apples in a smoothie this morning."
+    "tipTitle": "Idea from Expirely AI",
+    "tipDescription": "Combine the milk and bread to make delicious morning French Toast."
   },
-  "steps": {
-    "eyebrow": "Simple from the start",
-    "title": "Forget less, use more.",
-    "description": "One lightweight flow that keeps household stock feeling under control.",
+  "demo": {
+    "eyebrow": "Interactive Feature Showcase",
+    "title": "Interactive Expirely Simulator",
+    "description": "Explore the interactive simulation below to see how Gemini AI automatically transforms your kitchen and grocery management.",
+    "tabs": {
+      "scanner": "AI Vision Scan",
+      "tracker": "Urgency Tracker",
+      "recipe": "AI Recommendations",
+      "quota": "Freemium Model"
+    },
+    "scanner": {
+      "title": "Package & Fresh Goods Recognition",
+      "subtitle": "1 photo to detect product name, printed expiration date, or shelf-life estimate.",
+      "storageLabel": "Select Storage Location:",
+      "locations": {
+        "room": "Room Temp",
+        "fridge": "Refrigerator",
+        "freezer": "Freezer",
+        "pantry": "Pantry"
+      },
+      "scannedProduct": "Full Cream UHT Milk 1L",
+      "detectedDate": "Expiration Date: 15 Sep 2026",
+      "detectionMethod": "Automatic Package Detection (AI OCR)",
+      "freshProduct": "Cavendish Bananas",
+      "estimatedDays": "Freshness Estimate: ~5 days left",
+      "estimateMethod": "Dataset A Shelf-Life Reference",
+      "spoilageRisk": "Spoilage Risk Level:",
+      "riskLow": "Low (Optimal Storage)",
+      "riskModerate": "Moderate (Use in 2-3 days)",
+      "riskHigh": "High (Use Immediately)"
+    },
+    "tracker": {
+      "title": "Color-Coded Urgency Dashboard",
+      "subtitle": "Items are automatically prioritized by expiration date so you always know what to use first.",
+      "status": {
+        "expired": "Expired",
+        "urgent": "Urgent (0–2 Days)",
+        "warning": "Warning (3–7 Days)",
+        "safe": "Safe (>7 Days)"
+      },
+      "items": [
+        { "name": "Blueberry Yogurt", "date": "Today", "status": "urgent", "location": "Refrigerator" },
+        { "name": "Sliced White Bread", "date": "Tomorrow", "status": "urgent", "location": "Pantry" },
+        { "name": "Cheddar Cheese", "date": "In 5 days", "status": "warning", "location": "Refrigerator" },
+        { "name": "Premium Rice 5kg", "date": "In 45 days", "status": "safe", "location": "Pantry" }
+      ]
+    },
+    "recipe": {
+      "title": "Zero-Waste AI Recipe Recommendations",
+      "subtitle": "Gemini AI analyzes ingredients approaching expiration and generates practical meal ideas.",
+      "expiringIngredients": "Expiring Ingredients: UHT Milk, Bananas, & Cheddar Cheese",
+      "aiSuggestionTitle": "AI Recommendation: Banana Cheese Pancakes & Smoothie",
+      "aiSuggestionDesc": "Blend ripe bananas with milk for fluffy cheese-topped pancakes and a chilled morning smoothie with zero wasted ingredients."
+    },
+    "quota": {
+      "title": "Daily Quota & Ads System (Freemium)",
+      "subtitle": "Unlimited free manual entry. AI photo scanning and recipe suggestions come with daily quotas.",
+      "dailyQuotaLabel": "Today's AI Quota Remaining: 2 / 2 Scans",
+      "rewardedAdInfo": "Out of quota? Watch a short rewarded ad to unlock extra AI scans instantly!",
+      "unlimitedManual": "100% Free forever for manual inventory tracking & dashboard alerts."
+    }
+  },
+  "features": {
+    "eyebrow": "Core Capabilities",
+    "title": "Designed for a Calmer, Smarter Kitchen",
+    "description": "Comprehensive household inventory tracking powered by cutting-edge Gemini AI.",
     "items": [
-      { "title": "Scan a package", "description": "Take a product photo to help AI read its name and date." },
-      { "title": "See what is urgent", "description": "Clear status tells you what should be used first." },
-      { "title": "Get an idea", "description": "Ask for a simple way to use food before it goes to waste." }
+      {
+        "title": "1-Click AI Vision Recognition",
+        "description": "Snap a package photo. Gemini AI automatically recognizes the product name and reads printed dates."
+      },
+      {
+        "title": "Fresh Goods Shelf-Life Estimation",
+        "description": "For fresh produce without printed dates, Expirely estimates shelf life using scientific data references."
+      },
+      {
+        "title": "Spoilage Risk Analysis",
+        "description": "Evaluates spoilage risk based on visual condition and selected storage (Fridge, Freezer, Pantry, Room)."
+      },
+      {
+        "title": "Smart Urgency Dashboard",
+        "description": "Color-coded grouping (Red/Yellow/Green) sorted automatically by urgency for effortless prioritizing."
+      },
+      {
+        "title": "Zero-Waste Recipe Ideas",
+        "description": "Automated AI suggestions turning near-expiry ingredients into quick, tasty home meals."
+      },
+      {
+        "title": "Free Tier & Daily Quotas",
+        "description": "Unlimited free manual tracking, plus daily AI quotas expandable via rewarded video ads."
+      }
     ]
   },
-  "footer": { "note": "Made for a calmer kitchen and better everyday habits." }
+  "calculator": {
+    "eyebrow": "Savings Calculator",
+    "title": "How Much Money Can You Save?",
+    "description": "The average household wastes 15–20% of groceries simply by forgetting expiration dates. See your potential savings with Expirely.",
+    "monthlyLabel": "Monthly Grocery Spend ($ / Rp):",
+    "yearlySavings": "Estimated Annual Savings:",
+    "foodSavedLabel": "Food Saved:",
+    "foodSavedValue": "~24–40 items per year",
+    "cta": "Start Saving Today"
+  },
+  "ads": {
+    "eyebrow": "Sponsors & Business Model",
+    "title": "Ads & Sponsored Partnership Placeholder",
+    "description": "Expirely adopts a Freemium ad-supported business model. Free tier users get unlimited inventory tracking supported by unobtrusive banner ads & sponsored brand recommendations.",
+    "bannerAdLabel": "Banner Ad Placement (Placeholder)",
+    "bannerAdTitle": "Grocery Partner Deal: Save Up to 30% on Fresh Produce!",
+    "bannerAdDesc": "Get weekly fresh grocery discount vouchers at nearest Expirely partner supermarkets.",
+    "sponsoredLabel": "Sponsored Brand Recommendation",
+    "sponsoredTitle": "Sponsored Recipe by Brand Partner",
+    "sponsoredDesc": "Cook quick meals from expiring ingredients using Premium Seasonings. Maximize flavor with zero wasted food.",
+    "cta": "Explore Partnership Opportunities"
+  },
+  "testimonials": {
+    "eyebrow": "User Experiences",
+    "title": "Trusted by Households & Office Managers",
+    "description": "See how Expirely helps prevent grocery waste in home kitchens and office pantries.",
+    "items": [
+      {
+        "name": "Sarah Amalia",
+        "role": "Homemaker, Jakarta",
+        "comment": "I used to throw away milk and bread all the time because I forgot the dates. With Expirely, I snap a photo when shopping, get reminders, and AI recipe ideas!",
+        "rating": 5
+      },
+      {
+        "name": "Budi Santoso",
+        "role": "Office Manager, Surabaya",
+        "comment": "Incredible tool for office pantry inventory. Coffee, creamer, and snacks no longer expire quietly. The budget savings are very noticeable.",
+        "rating": 5
+      },
+      {
+        "name": "Rina Wijaya",
+        "role": "Home Chef & Food Blogger",
+        "comment": "The AI recipe recommendation feature is brilliant! Leftover ripe bananas and cheese are turned into delicious pancakes with zero food waste.",
+        "rating": 5
+      }
+    ]
+  },
+  "impact": {
+    "eyebrow": "Real Impact",
+    "title": "Why Choose Expirely?",
+    "stats": [
+      { "value": "30%", "label": "Household Food Waste Reduction" },
+      { "value": "$100+", "label": "Average Annual Savings Per Household" },
+      { "value": "< 5 sec", "label": "Time to Log a New Item" },
+      { "value": "100%", "label": "Automated AI Photo Tracking" }
+    ]
+  },
+  "steps": {
+    "eyebrow": "Simple From Day One",
+    "title": "3 Easy Steps to Stop Food Waste",
+    "description": "One lightweight workflow keeping your kitchen inventory organized every day.",
+    "items": [
+      {
+        "title": "1. Snap or Add Item",
+        "description": "Take a photo or pick storage location. AI reads product details and expiration automatically."
+      },
+      {
+        "title": "2. Track Expiry Urgency",
+        "description": "Check color-coded status badges on your dashboard to know what needs to be eaten first."
+      },
+      {
+        "title": "3. Get AI Meal Suggestions",
+        "description": "Receive delicious recipe recommendations based on expiring items before food goes bad."
+      }
+    ]
+  },
+  "faq": {
+    "eyebrow": "FAQ",
+    "title": "Frequently Asked Questions",
+    "items": [
+      {
+        "question": "Can Expirely recognize fresh food without expiration dates?",
+        "answer": "Yes! For unpackaged fresh produce like fruits or vegetables, Expirely uses a scientific shelf-life dataset to estimate freshness based on your selected storage location."
+      },
+      {
+        "question": "What if the AI misreads a package date?",
+        "answer": "Expirely includes 1-click manual editing for every item. You can quickly adjust product name, expiration date, or storage location at any time."
+      },
+      {
+        "question": "Is the app completely free to use?",
+        "answer": "Expirely is free to use. Manual logging and dashboard tracking are unlimited. AI photo scanning and recipe suggestions come with daily free quotas that can be expanded by watching short rewarded ads."
+      },
+      {
+        "question": "Is my inventory data secure?",
+        "answer": "All inventory data is securely isolated per user/company account. Photos uploaded are only processed transiently for AI feature extraction."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Ready to Reduce Food Waste & Save Money?",
+    "subtitle": "Join now and experience the ease of managing a smart kitchen powered by Expirely Gemini AI.",
+    "button": "Start Free Today"
+  },
+  "footer": {
+    "note": "Expirely — AI-powered inventory & food waste prevention for a calmer kitchen.",
+    "rights": "All Rights Reserved."
+  }
 }

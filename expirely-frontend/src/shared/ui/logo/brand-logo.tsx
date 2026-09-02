@@ -36,6 +36,7 @@ export function BrandLogo({
         {
           display: 'inline-flex',
           alignItems: 'center',
+          gap: 1.25,
           ...(disabled && { pointerEvents: 'none' }),
         },
         ...(Array.isArray(sx) ? sx : [sx]),
@@ -44,16 +45,32 @@ export function BrandLogo({
     >
       <Box
         component="img"
-        alt="Expirely"
-        src={isSingle ? '/brand/expirely-icon.svg' : '/brand/expirely-lockup.svg'}
+        alt="Expirely Icon"
+        src="/brand/expirely-icon.svg"
         sx={{
-          width: isSingle ? 36 : 140,
+          width: 36,
           height: 36,
           display: 'block',
           objectFit: 'contain',
           flexShrink: 0,
         }}
       />
+      {!isSingle && (
+        <Box
+          component="span"
+          sx={{
+            fontSize: 22,
+            fontWeight: 800,
+            letterSpacing: -0.6,
+            color: 'text.primary',
+            lineHeight: 1,
+            display: 'inline-flex',
+            alignItems: 'center',
+          }}
+        >
+          Expirely
+        </Box>
+      )}
     </BrandLogoRoot>
   );
 }
@@ -62,7 +79,6 @@ export function BrandLogo({
 
 const BrandLogoRoot = styled(Link)(() => ({
   flexShrink: 0,
-  color: 'transparent',
   display: 'inline-flex',
   verticalAlign: 'middle',
 }));

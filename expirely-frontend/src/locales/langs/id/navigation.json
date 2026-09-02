@@ -2,7 +2,14 @@
   "home": "Beranda",
   "expirely": {
     "root": "Expirely",
-    "items": "Barang"
+    "items": "Stok Rumah"
+  },
+  "settings": {
+    "root": "Pengaturan",
+    "branches": "Cabang / Lokasi",
+    "roles": "Peran & Hak Akses",
+    "users": "Manajemen Pengguna",
+    "translationOverride": "Kustomisasi Bahasa"
   },
   "account": {
     "profile": "Profil",

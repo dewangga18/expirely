@@ -1,9 +1,10 @@
 const ROOTS = {
   AUTH: '/auth',
+  DASHBOARD: '/dashboard',
 };
 
 export const paths = {
-  landing: '/landing',
+  landing: '/',
   faqs: '/faqs',
   auth: {
     jwt: {
@@ -12,21 +13,21 @@ export const paths = {
     },
   },
   dashboard: {
-    root: '/',
+    root: ROOTS.DASHBOARD,
     settings: {
-      root: '/settings',
-      branches: '/settings/branches',
-      roles: '/settings/roles',
-      users: '/settings/users',
-      translationOverride: '/settings/translation-overrides',
+      root: `${ROOTS.DASHBOARD}/settings`,
+      branches: `${ROOTS.DASHBOARD}/settings/branches`,
+      roles: `${ROOTS.DASHBOARD}/settings/roles`,
+      users: `${ROOTS.DASHBOARD}/settings/users`,
+      translationOverride: `${ROOTS.DASHBOARD}/settings/translation-overrides`,
     },
     expirely: {
       items: '/expirely/items',
     },
     dashboards: {
-      finance: '/finance',
-      monitoring: '/monitoring',
-      sales: '/sales',
+      finance: `${ROOTS.DASHBOARD}/finance`,
+      monitoring: `${ROOTS.DASHBOARD}/monitoring`,
+      sales: `${ROOTS.DASHBOARD}/sales`,
     },
   },
 };
