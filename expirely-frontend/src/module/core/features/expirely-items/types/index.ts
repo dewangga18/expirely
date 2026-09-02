@@ -17,6 +17,14 @@ export type ExpirelyItem = {
   created_at: string;
   updated_at: string;
   spoilage_assessment?: SpoilageAssessment;
+  estimate_basis?: EstimateBasis;
+};
+
+export type EstimateBasis = {
+  category: string;
+  estimate_days: number;
+  source_url: string;
+  safety_disclaimer: string;
 };
 
 export type StorageLocation =

@@ -5,6 +5,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"venturo-skeleton-go/internal/modules/core/expirely_item/domain"
 )
 
 func TestGeminiRequestKeepsAPIKeyOutOfURL(t *testing.T) {
@@ -17,6 +19,34 @@ func TestGeminiRequestKeepsAPIKeyOutOfURL(t *testing.T) {
 	}
 	if got := request.Header.Get("x-goog-api-key"); got != "test-secret-key" {
 		t.Fatalf("x-goog-api-key header = %q", got)
+	}
+}
+
+func TestToResponseAddsEstimateBasisOnlyForEstimatedItems(t *testing.T) {
+	category := "sayur_hijau"
+	item := &domain.ExpirelyItem{
+		ID:          "item-id",
+		NamaProduk:  "Bayam",
+		Kategori:    &category,
+		ExpiryDate:  time.Date(2026, time.September, 5, 0, 0, 0, 0, time.UTC),
+		IsEstimated: true,
+		Status:      domain.StatusActive,
+	}
+
+	response := toResponse(item)
+	if response.EstimateBasis == nil {
+		t.Fatal("expected estimate basis for estimated item")
+	}
+	if response.EstimateBasis.Category != category || response.EstimateBasis.EstimateDays != 4 {
+		t.Fatalf("unexpected estimate basis: %+v", response.EstimateBasis)
+	}
+	if response.EstimateBasis.SourceURL == "" || response.EstimateBasis.SafetyDisclaimer == "" {
+		t.Fatalf("estimate basis must include source and disclaimer: %+v", response.EstimateBasis)
+	}
+
+	item.IsEstimated = false
+	if response := toResponse(item); response.EstimateBasis != nil {
+		t.Fatalf("exact-date item must not include estimate basis: %+v", response.EstimateBasis)
 	}
 }
 

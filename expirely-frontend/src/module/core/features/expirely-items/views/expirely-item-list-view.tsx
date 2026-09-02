@@ -28,6 +28,7 @@ import { ErrorDialog } from 'src/shared/ui/error-dialog';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { ConfirmDialog } from 'src/shared/ui/confirm-dialog';
 import { SearchNotFound } from 'src/shared/ui/search-not-found';
+import { useOnboardingTour } from 'src/shared/hooks/use-onboarding-tour';
 import {
   useTable,
   TableSkeleton,
@@ -36,6 +37,7 @@ import {
 } from 'src/shared/ui/table';
 
 import { updateStatus } from '../api';
+import { useAuthContext } from '../../auth/hooks';
 import { AdBanner } from '../components/ad-banner';
 import { useItemList } from '../hooks/use-item-list';
 import { QuotaPanel } from '../components/quota-panel';
@@ -57,6 +59,7 @@ function daysUntil(expiryDate: string) {
 export function ExpirelyItemListView() {
   const { t } = useTranslate('expirely');
   const { t: tCommon } = useTranslate('common');
+  const { company } = useAuthContext();
   const router = useRouter();
   const searchParams = useSearchParams();
   const dialog = useItemDialog();
@@ -72,6 +75,15 @@ export function ExpirelyItemListView() {
   const [quotaRefreshKey, setQuotaRefreshKey] = useState(0);
 
   const { data, loading, error, refresh } = useItemList();
+  const { hasCompletedTour, startTour } = useOnboardingTour(company?.id);
+
+  useEffect(() => {
+    if (loading || error || data.length === 0 || hasCompletedTour()) return undefined;
+
+    const timeoutId = window.setTimeout(startTour, 700);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [data.length, error, hasCompletedTour, loading, startTour]);
 
   useEffect(() => {
     const action = searchParams.get('action');
@@ -125,16 +137,18 @@ export function ExpirelyItemListView() {
   );
 
   const handleMarkConsumed = useCallback(
-    async (id: string) => {
-      if (actionLoading) return;
+    async (id: string): Promise<boolean> => {
+      if (actionLoading) return false;
       setActionLoading(true);
       try {
         await updateStatus(id, 'consumed');
         await refresh();
         dialog.close();
         toast.success(t('feedback.markedConsumed'));
+        return true;
       } catch (err) {
         setActionError(err instanceof Error ? err.message : t('errors.saveFailed'));
+        return false;
       } finally {
         setActionLoading(false);
       }
@@ -175,6 +189,7 @@ export function ExpirelyItemListView() {
               sx={{ width: { xs: 1, sm: 'auto' } }}
             >
               <Button
+                id="photo-capture-button"
                 fullWidth
                 variant="outlined"
                 color="inherit"
@@ -184,6 +199,7 @@ export function ExpirelyItemListView() {
                 {t('buttons.fromPhoto')}
               </Button>
               <Button
+                id="recommendation-button"
                 fullWidth
                 variant="outlined"
                 color="inherit"
@@ -194,6 +210,7 @@ export function ExpirelyItemListView() {
                 {t('buttons.recommend', { count: urgentItems.length })}
               </Button>
               <Button
+                id="add-item-button"
                 fullWidth
                 variant="contained"
                 startIcon={<Iconify icon="mingcute:add-line" />}
@@ -223,14 +240,14 @@ export function ExpirelyItemListView() {
         )}
 
         {pristineEmpty ? (
-          <Card>
+          <Card id="item-list">
             <ItemEmptyState
               onCreateManual={() => dialog.open('new')}
               onCreateFromPhoto={() => setPhotoOpen(true)}
             />
           </Card>
         ) : (
-          <Card>
+          <Card id="item-list">
             <Stack sx={{ p: 2 }}>
               <TextField
                 fullWidth
@@ -367,6 +384,7 @@ export function ExpirelyItemListView() {
         items={urgentItems}
         onClose={() => setRecommendOpen(false)}
         onGenerated={() => setQuotaRefreshKey((current) => current + 1)}
+        onMarkConsumed={handleMarkConsumed}
       />
 
       <PhotoUploadDialog

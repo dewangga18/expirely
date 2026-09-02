@@ -1,0 +1,35 @@
+{
+  "pageTitle": "Kurangi makanan terbuang",
+  "header": { "signIn": "Masuk" },
+  "hero": {
+    "eyebrow": "Kurangi mubazir, satu kebiasaan kecil setiap hari",
+    "title": "Makanan yang baik pantas dipakai, bukan terlupakan.",
+    "description": "Expirely membantu Anda mengingat apa yang ada di rumah, kapan harus dipakai, dan ide sederhana sebelum terlambat.",
+    "primaryCta": "Mulai gratis",
+    "secondaryCta": "Lihat cara kerjanya",
+    "reassurance": "Cepat dimulai. Cukup foto kemasan atau tambah barang yang sudah ada."
+  },
+  "preview": {
+    "title": "Dapur hari ini",
+    "subtitle": "3 barang perlu diperhatikan",
+    "itemOne": "Susu UHT",
+    "itemOneDetail": "Gunakan hari ini",
+    "itemTwo": "Apel hijau",
+    "itemTwoDetail": "2 hari lagi",
+    "itemThree": "Telur",
+    "itemThreeDetail": "Masih aman",
+    "tipTitle": "Ide dari Expirely AI",
+    "tipDescription": "Gunakan susu dan apel untuk smoothie pagi ini."
+  },
+  "steps": {
+    "eyebrow": "Sederhana dari awal",
+    "title": "Lebih sedikit lupa, lebih banyak terpakai.",
+    "description": "Satu alur ringan untuk menjaga stok rumah tetap terasa terkendali.",
+    "items": [
+      { "title": "Foto kemasan", "description": "Ambil foto produk untuk membantu AI membaca nama dan tanggalnya." },
+      { "title": "Lihat yang mendesak", "description": "Status jelas membantu Anda tahu apa yang sebaiknya dipakai lebih dulu." },
+      { "title": "Dapatkan ide", "description": "Minta saran penggunaan sederhana sebelum makanan terbuang." }
+    ]
+  },
+  "footer": { "note": "Dibuat untuk dapur yang lebih tenang dan kebiasaan yang lebih baik." }
+}

@@ -45,9 +45,14 @@ export function Logo({
     >
       <Box
         component="img"
-        alt="Expirely logo"
-        src="/logo/venturo-logo.png"
-        sx={{ width: '100%', height: '100%', objectFit: 'contain' }}
+        alt=""
+        src="/brand/expirely-icon.svg"
+        sx={{
+          width: '100%',
+          height: '100%',
+          display: 'block',
+          objectFit: 'contain',
+        }}
       />
     </LogoRoot>
   );

@@ -1,7 +1,9 @@
 import { useState } from 'react';
 
+import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 
 import { useRouter } from 'src/routes/hooks';
 
@@ -47,17 +49,34 @@ export function JwtSignInView() {
         </Alert>
       )}
 
-      <Button
-        fullWidth
-        size="large"
-        variant="contained"
-        loading={googleLoading}
-        loadingIndicator={t('signIn.googleSubmitting')}
-        onClick={handleGoogleSignIn}
-        startIcon={<Iconify width={22} icon="socials:google" />}
+      <Box
+        sx={{
+          p: 1,
+          border: '1px solid',
+          borderColor: 'divider',
+          borderRadius: 2.5,
+          bgcolor: 'background.neutral',
+        }}
       >
-        {t('signIn.googleSubmit')}
-      </Button>
+        <Button
+          fullWidth
+          size="large"
+          variant="contained"
+          loading={googleLoading}
+          loadingIndicator={t('signIn.googleSubmitting')}
+          onClick={handleGoogleSignIn}
+          startIcon={<Iconify width={22} icon="socials:google" />}
+          sx={{ minHeight: 52, borderRadius: 1.75 }}
+        >
+          {t('signIn.googleSubmit')}
+        </Button>
+        <Typography
+          variant="caption"
+          sx={{ display: 'block', px: 1, pt: 1.25, textAlign: 'center', color: 'text.secondary' }}
+        >
+          {t('signIn.trustNote')}
+        </Typography>
+      </Box>
     </>
   );
 }

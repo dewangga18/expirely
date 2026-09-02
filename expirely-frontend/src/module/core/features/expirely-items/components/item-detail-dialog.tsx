@@ -110,6 +110,59 @@ export function ItemDetailDialog({
                 value={t(`expirely:categories.${item.kategori}`)}
               />
             )}
+            {item.estimate_basis && (
+              <Box
+                sx={{
+                  gridColumn: { md: '1 / -1' },
+                  p: { xs: 2, md: 2.5 },
+                  border: '1px solid',
+                  borderColor: 'warning.light',
+                  borderRadius: 2.5,
+                  bgcolor: 'warning.lighter',
+                }}
+              >
+                <Stack direction="row" spacing={1.25} alignItems="flex-start">
+                  <Iconify icon="solar:info-circle-bold" width={22} color="warning.dark" />
+                  <Box sx={{ minWidth: 0 }}>
+                    <Typography variant="subtitle2">
+                      {t('estimateBasis.title', { count: item.estimate_basis.estimate_days })}
+                    </Typography>
+                    <Typography variant="body2" sx={{ mt: 0.5, color: 'text.secondary' }}>
+                      {t(`estimateBasis.tips.${item.estimate_basis.category}.storage`)}
+                    </Typography>
+                    <Typography variant="body2" sx={{ mt: 0.75, color: 'text.secondary' }}>
+                      {t(`estimateBasis.tips.${item.estimate_basis.category}.useBy`)}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      sx={{ display: 'block', mt: 1.25, color: 'text.secondary' }}
+                    >
+                      {t('estimateBasis.disclaimer')}
+                    </Typography>
+                    <Box
+                      component="a"
+                      href={item.estimate_basis.source_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      sx={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 0.5,
+                        mt: 1,
+                        color: 'primary.dark',
+                        fontSize: 13,
+                        fontWeight: 700,
+                        textDecoration: 'none',
+                        '&:hover': { textDecoration: 'underline' },
+                      }}
+                    >
+                      {t('estimateBasis.source')}
+                      <Iconify icon="eva:external-link-fill" width={15} />
+                    </Box>
+                  </Box>
+                </Stack>
+              </Box>
+            )}
           </Box>
         )}
       </DialogContent>

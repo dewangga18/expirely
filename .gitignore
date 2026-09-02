@@ -107,3 +107,4 @@ tsconfig.tsbuildinfo
 # graphify (generated output)
 # =====================
 graphify-out/
+.opencode-free-models.md

@@ -43,8 +43,8 @@ export function AuthSplitSection({
         (theme) => ({
           ...theme.mixins.bgGradient({
             images: [
-              `linear-gradient(0deg, ${varAlpha(theme.vars.palette.background.defaultChannel, 0.92)}, ${varAlpha(theme.vars.palette.background.defaultChannel, 0.92)})`,
-              `url(${CONFIG.assetsDir}/assets/background/background-3-blur.webp)`,
+              `radial-gradient(circle at 90% 12%, ${varAlpha(theme.vars.palette.primary.lighterChannel, 0.34)}, transparent 32%)`,
+              `linear-gradient(155deg, #063F35 0%, ${theme.vars.palette.primary.dark} 45%, ${theme.vars.palette.primary.main} 100%)`,
             ],
           }),
           px: 3,
@@ -66,24 +66,52 @@ export function AuthSplitSection({
       ]}
       {...other}
     >
-      <div>
-        <Typography variant="h3" sx={{ textAlign: 'center' }}>
+      <Box sx={{ position: 'relative', zIndex: 1 }}>
+        <Typography variant="h3" sx={{ color: 'common.white', textAlign: 'center' }}>
           {title}
         </Typography>
 
         {subtitle && (
-          <Typography sx={{ color: 'text.secondary', textAlign: 'center', mt: 2 }}>
+          <Typography
+            sx={(theme) => ({
+              maxWidth: 360,
+              marginInline: 'auto',
+              color: varAlpha(theme.vars.palette.common.whiteChannel, 0.76),
+              textAlign: 'center',
+              marginTop: theme.spacing(2),
+            })}
+          >
             {subtitle}
           </Typography>
         )}
-      </div>
+      </Box>
 
       <Box
-        component="img"
-        alt="Dashboard illustration"
-        src={imgUrl}
-        sx={{ width: 1, aspectRatio: '4/3', objectFit: 'cover' }}
-      />
+        sx={(theme) => ({
+          zIndex: 1,
+          width: 1,
+          padding: theme.spacing(1.5),
+          border: '1px solid',
+          borderColor: varAlpha(theme.vars.palette.common.whiteChannel, 0.18),
+          borderRadius: 3.5,
+          bgcolor: varAlpha(theme.vars.palette.common.whiteChannel, 0.1),
+          boxShadow: `0 24px 56px ${varAlpha(theme.vars.palette.common.blackChannel, 0.24)}`,
+          backdropFilter: 'blur(12px)',
+        })}
+      >
+        <Box
+          component="img"
+          alt="Dashboard illustration"
+          src={imgUrl}
+          sx={{
+            width: 1,
+            display: 'block',
+            aspectRatio: '4/3',
+            borderRadius: 2.5,
+            objectFit: 'cover',
+          }}
+        />
+      </Box>
 
       {!!methods?.length && method && (
         <Box component="ul" sx={{ gap: 2, display: 'flex' }}>

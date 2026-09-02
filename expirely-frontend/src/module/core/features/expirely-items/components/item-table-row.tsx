@@ -15,31 +15,7 @@ import { Label } from 'src/shared/ui/label';
 import { Iconify } from 'src/shared/ui/iconify';
 import { CustomPopover } from 'src/shared/ui/custom-popover';
 
-// ----------------------------------------------------------------------
-
-function getDaysUntilExpiry(expiryDate: string): number {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const expiry = new Date(expiryDate);
-  expiry.setHours(0, 0, 0, 0);
-  return Math.ceil((expiry.getTime() - today.getTime()) / 86400000);
-}
-
-function getExpiryColor(days: number): 'error' | 'warning' | 'success' {
-  if (days <= 0) return 'error';
-  if (days <= 3) return 'error';
-  if (days <= 7) return 'warning';
-  return 'success';
-}
-
-function getExpiryLabel(
-  days: number,
-  t: (key: string, options?: Record<string, unknown>) => string
-): string {
-  if (days < 0) return t('expirely:status.expired');
-  if (days === 0) return t('expirely:status.today');
-  return t('expirely:status.daysLeft', { count: days });
-}
+import { UrgencyBadge } from './urgency-badge';
 
 type Props = {
   row: ExpirelyItem;
@@ -62,9 +38,6 @@ export function ItemTableRow({
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const handleClose = () => setAnchorEl(null);
 
-  const days = getDaysUntilExpiry(row.expiry_date);
-  const color = getExpiryColor(days);
-
   return (
     <>
       <TableRow hover sx={{ cursor: 'pointer' }} onClick={() => onView(row.id)}>
@@ -75,9 +48,7 @@ export function ItemTableRow({
         </TableCell>
 
         <TableCell>
-          <Label color={color} variant="soft">
-            {getExpiryLabel(days, t)}
-          </Label>
+          <UrgencyBadge expiryDate={row.expiry_date} />
         </TableCell>
 
         <TableCell>

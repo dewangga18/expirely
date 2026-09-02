@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	_ "embed"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -31,21 +32,24 @@ var (
 const (
 	dailyRecognitionLimit    = 2
 	dailyRecommendationLimit = 2
+	estimateSafetyDisclaimer = "This category estimate is a planning reminder, not a food-safety guarantee. Follow the package label and discard food when its condition is doubtful."
 )
 
-// Shelf-life dataset (Dataset A) — loaded once at startup.
-var shelfLifeData = map[string]domain.ShelfLifeEntry{
-	"buah_segar":          {Kategori: "buah_segar", EstimasiHari: 6, Contoh: []string{"pisang", "apel", "jeruk"}},
-	"sayur_hijau":         {Kategori: "sayur_hijau", EstimasiHari: 4, Contoh: []string{"bayam", "kangkung", "sawi"}},
-	"sayur_umbi":          {Kategori: "sayur_umbi", EstimasiHari: 18, Contoh: []string{"kentang", "wortel", "bawang"}},
-	"roti_tanpa_pengawet": {Kategori: "roti_tanpa_pengawet", EstimasiHari: 3, Contoh: []string{"roti lokal", "roti bakery"}},
-	"telur_lepas":         {Kategori: "telur_lepas", EstimasiHari: 18, Contoh: []string{"telur ayam curah"}},
-	"daging_segar":        {Kategori: "daging_segar", EstimasiHari: 2, Contoh: []string{"daging sapi/ayam belum dibekukan"}},
-	"daging_beku":         {Kategori: "daging_beku", EstimasiHari: 90, Contoh: []string{"daging di freezer"}},
-	"ikan_segar":          {Kategori: "ikan_segar", EstimasiHari: 2, Contoh: []string{"ikan belum dibekukan"}},
-	"susu_segar_non_uht":  {Kategori: "susu_segar_non_uht", EstimasiHari: 4, Contoh: []string{"susu pasteurisasi"}},
-	"keju_segar":          {Kategori: "keju_segar", EstimasiHari: 10, Contoh: []string{"keju tanpa kemasan awet"}},
-	"default_unknown":     {Kategori: "default_unknown", EstimasiHari: 7, Contoh: []string{}},
+//go:embed data/shelf_life.json
+var shelfLifeDataset []byte
+
+// Shelf-life dataset (Dataset A) — a versioned, source-linked snapshot loaded once at startup.
+var shelfLifeData = loadShelfLifeData()
+
+func loadShelfLifeData() map[string]domain.ShelfLifeEntry {
+	var data map[string]domain.ShelfLifeEntry
+	if err := json.Unmarshal(shelfLifeDataset, &data); err != nil {
+		panic(fmt.Sprintf("load shelf-life dataset: %v", err))
+	}
+	if _, ok := data["default_unknown"]; !ok {
+		panic("load shelf-life dataset: default_unknown entry is required")
+	}
+	return data
 }
 
 type Service struct {
@@ -382,7 +386,7 @@ func (s *Service) GetShelfLifeData() map[string]domain.ShelfLifeEntry {
 
 // toResponse converts a domain item to a DTO response.
 func toResponse(item *domain.ExpirelyItem) *dto.ItemResponse {
-	return &dto.ItemResponse{
+	response := &dto.ItemResponse{
 		ID:          item.ID,
 		NamaProduk:  item.NamaProduk,
 		Kategori:    item.Kategori,
@@ -393,6 +397,21 @@ func toResponse(item *domain.ExpirelyItem) *dto.ItemResponse {
 		CreatedAt:   item.CreatedAt,
 		UpdatedAt:   item.UpdatedAt,
 	}
+	if item.IsEstimated && item.Kategori != nil {
+		category := strings.TrimSpace(*item.Kategori)
+		entry, ok := shelfLifeData[category]
+		if !ok {
+			entry = shelfLifeData["default_unknown"]
+		}
+		response.EstimateBasis = &dto.EstimateBasis{
+			Category:         entry.Kategori,
+			EstimateDays:     entry.EstimasiHari,
+			SourceURL:        entry.SourceURL,
+			SafetyDisclaimer: estimateSafetyDisclaimer,
+		}
+	}
+
+	return response
 }
 
 // --- AI Integration (Google Gemini) ---

@@ -30,4 +30,5 @@ type ShelfLifeEntry struct {
 	Kategori     string   `json:"kategori"`
 	EstimasiHari int      `json:"estimasi_hari"`
 	Contoh       []string `json:"contoh"`
+	SourceURL    string   `json:"source_url"`
 }

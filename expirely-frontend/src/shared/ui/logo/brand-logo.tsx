@@ -5,7 +5,6 @@ import { mergeClasses } from 'minimal-shared/utils';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import { styled } from '@mui/material/styles';
-import Typography from '@mui/material/Typography';
 
 import { RouterLink } from 'src/routes/components';
 
@@ -44,36 +43,17 @@ export function BrandLogo({
       {...other}
     >
       <Box
-        component="span"
+        component="img"
+        alt="Expirely"
+        src={isSingle ? '/brand/expirely-icon.svg' : '/brand/expirely-lockup.svg'}
         sx={{
-          width: 36,
+          width: isSingle ? 36 : 140,
           height: 36,
-          display: 'grid',
-          borderRadius: '12px 12px 12px 4px',
-          placeItems: 'center',
-          color: 'common.white',
-          bgcolor: 'primary.main',
-          fontSize: 18,
-          fontWeight: 800,
+          display: 'block',
+          objectFit: 'contain',
           flexShrink: 0,
         }}
-      >
-        E
-      </Box>
-      {!isSingle && (
-        <Typography
-          component="span"
-          sx={{
-            ml: 1.25,
-            color: 'text.primary',
-            fontSize: 20,
-            fontWeight: 800,
-            letterSpacing: -0.5,
-          }}
-        >
-          Expirely
-        </Typography>
-      )}
+      />
     </BrandLogoRoot>
   );
 }

@@ -9,7 +9,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
 import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -22,6 +21,8 @@ import { Iconify } from 'src/shared/ui/iconify';
 import { MotionDialog } from 'src/shared/ui/animate';
 import { Form, Field } from 'src/shared/ui/hook-form';
 import { ErrorDialog } from 'src/shared/ui/error-dialog';
+
+import { Button as UiButton } from 'src/components/ui/button';
 
 import { createItem, updateItem } from '../api';
 
@@ -120,6 +121,19 @@ export function ItemFormDialog({ open, mode, seed, onClose, onSaved }: Props) {
         maxWidth="sm"
       >
         <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 2, py: 2, pr: 2.5 }}>
+          <Box
+            sx={{
+              display: 'grid',
+              width: 36,
+              height: 36,
+              placeItems: 'center',
+              borderRadius: 1.5,
+              color: 'primary.contrastText',
+              bgcolor: 'primary.main',
+            }}
+          >
+            <Iconify icon={isEditing ? 'solar:pen-bold' : 'mingcute:add-line'} width={20} />
+          </Box>
           <Box sx={{ flex: 1 }}>{title}</Box>
           <IconButton
             size="small"
@@ -138,14 +152,10 @@ export function ItemFormDialog({ open, mode, seed, onClose, onSaved }: Props) {
             </Stack>
           </DialogContent>
           <DialogActions>
-            <Button
-              type="submit"
-              variant="contained"
-              startIcon={<Iconify icon="solar:check-circle-bold" />}
-              loading={submitting.value}
-            >
+            <UiButton type="submit" disabled={submitting.value}>
+              <Iconify icon="solar:check-circle-bold" width={18} />
               {tCommon('actions.save')}
-            </Button>
+            </UiButton>
           </DialogActions>
         </Form>
       </MotionDialog>

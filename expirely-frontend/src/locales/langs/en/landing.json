@@ -1,0 +1,35 @@
+{
+  "pageTitle": "Waste less food",
+  "header": { "signIn": "Sign in" },
+  "hero": {
+    "eyebrow": "Waste less, one small habit at a time",
+    "title": "Good food deserves to be used, not forgotten.",
+    "description": "Expirely helps you remember what is at home, when to use it, and what to make before it is too late.",
+    "primaryCta": "Start free",
+    "secondaryCta": "See how it works",
+    "reassurance": "Get started quickly. Scan a package or add an item you already have."
+  },
+  "preview": {
+    "title": "Today’s kitchen",
+    "subtitle": "3 items need attention",
+    "itemOne": "UHT milk",
+    "itemOneDetail": "Use today",
+    "itemTwo": "Green apples",
+    "itemTwoDetail": "2 days left",
+    "itemThree": "Eggs",
+    "itemThreeDetail": "Still safe",
+    "tipTitle": "An idea from Expirely AI",
+    "tipDescription": "Use the milk and apples in a smoothie this morning."
+  },
+  "steps": {
+    "eyebrow": "Simple from the start",
+    "title": "Forget less, use more.",
+    "description": "One lightweight flow that keeps household stock feeling under control.",
+    "items": [
+      { "title": "Scan a package", "description": "Take a product photo to help AI read its name and date." },
+      { "title": "See what is urgent", "description": "Clear status tells you what should be used first." },
+      { "title": "Get an idea", "description": "Ask for a simple way to use food before it goes to waste." }
+    ]
+  },
+  "footer": { "note": "Made for a calmer kitchen and better everyday habits." }
+}

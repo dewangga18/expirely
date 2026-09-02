@@ -50,6 +50,24 @@
     "estimated": "Estimation",
     "kategori": "Category"
   },
+  "estimateBasis": {
+    "title": "Estimate basis: about {{count}} days",
+    "disclaimer": "This is a category-based planning reminder, not a food-safety guarantee. Follow the package label and do not consume food when its condition is doubtful.",
+    "source": "Read the food-storage guide",
+    "tips": {
+      "buah_segar": { "storage": "Store according to the fruit type; keep fast-ripening fruit separate from other produce.", "useBy": "Check for changes in texture, smell, or mould before use." },
+      "sayur_hijau": { "storage": "Refrigerate and keep dry until ready to use.", "useBy": "Use first when leaves begin to wilt or feel damp." },
+      "sayur_umbi": { "storage": "Keep in a cool, dry, ventilated place away from excess moisture.", "useBy": "Discard when there is mould, an unusual smell, or decay." },
+      "roti_tanpa_pengawet": { "storage": "Keep sealed; move to the freezer when it will not be used soon.", "useBy": "Do not merely remove a mouldy spot—avoid the whole loaf when mould is visible." },
+      "telur_lepas": { "storage": "Refrigerate at a stable temperature and avoid repeated temperature changes.", "useBy": "Use according to local storage rules and condition; do not use cracked or odorous eggs." },
+      "daging_segar": { "storage": "Keep covered in the coldest part of the refrigerator and prevent juices touching other food.", "useBy": "Cook or freeze promptly; do not use when condition or smell is doubtful." },
+      "daging_beku": { "storage": "Keep continuously frozen and avoid repeated thaw-freeze cycles.", "useBy": "This window is mainly for quality; thaw safely before use." },
+      "ikan_segar": { "storage": "Keep very cold, covered, and use as soon as possible.", "useBy": "Do not use when smell, colour, or texture is doubtful." },
+      "susu_segar_non_uht": { "storage": "Keep refrigerated and return it promptly after use.", "useBy": "Follow the package date when available; discard when packaging is damaged or condition changes." },
+      "keju_segar": { "storage": "Keep covered in the refrigerator and use clean serving utensils.", "useBy": "Check product condition and follow package directions before use." },
+      "default_unknown": { "storage": "Use the package instructions or guidance specific to the product type.", "useBy": "This date is only an initial reminder; check product condition before use." }
+    }
+  },
   "actions": {
     "retry": "Try again",
     "markConsumed": "Mark Consumed",
@@ -77,9 +95,26 @@
   "recommendation": {
     "title": "Ideas to use first",
     "description": "Create a short idea for {{count}} items expiring within seven days.",
+    "assistantLabel": "Expirely AI",
+    "analyzing": "Analyzing your items...",
+    "resultsIntro": "Here are ideas to use first.",
+    "consumed": "Marked as consumed",
     "getButton": "Create usage ideas",
     "retry": "Try Again",
     "close": "Close"
+  },
+  "onboardingTour": {
+    "addTitle": "Add an item",
+    "addDescription": "Enter an item manually when you already know its expiry date.",
+    "photoTitle": "Scan from a photo",
+    "photoDescription": "Let AI recognize the product and expiry date from a photo.",
+    "listTitle": "Track your stock",
+    "listDescription": "The colour status shows which items to use first.",
+    "recommendTitle": "Get usage ideas",
+    "recommendDescription": "Get AI ideas for items approaching their expiry date.",
+    "next": "Next",
+    "previous": "Previous",
+    "done": "Done"
   },
   "feedback": {
     "saved": "Item {{name}} saved.",

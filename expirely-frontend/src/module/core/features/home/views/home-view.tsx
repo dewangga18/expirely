@@ -20,6 +20,8 @@ import { useTranslate } from 'src/locales';
 import { Iconify } from 'src/shared/ui/iconify';
 import { getStats, listItems } from 'src/module/core/features/expirely-items/api';
 
+import MagicBento, { type BentoCardProps } from 'src/components/MagicBento';
+
 import { useAuthContext } from '../../auth/hooks';
 
 // ----------------------------------------------------------------------
@@ -61,15 +63,19 @@ export function HomeView() {
   });
   const [urgentItems, setUrgentItems] = useState<ExpirelyItem[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
     setError(null);
+    setLoading(true);
     try {
       const [nextStats, result] = await Promise.all([getStats(), listItems()]);
       setStats(nextStats);
       setUrgentItems(result.data.slice(0, 3));
     } catch (err) {
       setError(err instanceof Error ? err.message : t('errors.load'));
+    } finally {
+      setLoading(false);
     }
   }, [t]);
 
@@ -79,6 +85,22 @@ export function HomeView() {
 
   const name = user?.full_name || user?.username || '';
   const tint = (color: ColorKey) => varAlpha(theme.vars.palette[color].mainChannel, 0.12);
+  const priorityItem = urgentItems[0];
+  const priorityDays = priorityItem
+    ? Math.ceil(
+        (new Date(`${priorityItem.expiry_date}T00:00:00`).getTime() -
+          new Date(new Date().setHours(0, 0, 0, 0)).getTime()) /
+          86400000
+      )
+    : null;
+  const priorityStatus =
+    priorityDays === null
+      ? t('today.statusEmpty')
+      : priorityDays < 0
+        ? t('today.statusExpired')
+        : priorityDays === 0
+          ? t('today.statusToday')
+          : t('today.statusDays', { count: priorityDays });
 
   const statCards: { key: string; value: number; icon: IconifyName; color: ColorKey }[] = [
     { key: 'tracked', value: stats.total_active, icon: 'solar:inbox-bold', color: 'primary' },
@@ -101,6 +123,12 @@ export function HomeView() {
       color: 'error',
     },
   ];
+  const bentoItems: BentoCardProps[] = statCards.map((stat) => ({
+    color: theme.vars.palette[stat.color].dark,
+    label: t('stats.live'),
+    title: loading ? t('stats.loading') : stat.value.toLocaleString(),
+    description: t(`stats.${stat.key}`),
+  }));
 
   return (
     <Box sx={{ p: { xs: 2, md: 3 } }}>
@@ -111,39 +139,121 @@ export function HomeView() {
         </Typography>
       </Stack>
 
-      {/* Quick stats */}
-      <Box
+      <Card
         sx={{
-          display: 'grid',
-          gap: 3,
-          gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
+          position: 'relative',
+          overflow: 'hidden',
+          mb: 3,
+          px: { xs: 2.5, md: 4 },
+          py: { xs: 3, md: 4 },
+          color: 'common.white',
+          background: (themeValue) =>
+            `linear-gradient(135deg, ${themeValue.vars.palette.primary.dark} 0%, ${themeValue.vars.palette.primary.main} 56%, #0A8065 100%)`,
         }}
       >
-        {statCards.map((s) => (
-          <Card key={s.key} sx={{ p: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Box
+        <Box
+          sx={{
+            position: 'absolute',
+            top: -110,
+            right: { xs: -140, md: -65 },
+            width: 290,
+            height: 290,
+            border: '40px solid',
+            borderColor: varAlpha(theme.vars.palette.common.whiteChannel, 0.1),
+            borderRadius: '50%',
+          }}
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            right: { xs: 24, md: 64 },
+            bottom: -48,
+            width: 136,
+            height: 136,
+            borderRadius: '32px 32px 32px 8px',
+            bgcolor: varAlpha(theme.vars.palette.common.whiteChannel, 0.1),
+            transform: 'rotate(18deg)',
+          }}
+        />
+        <Box
+          sx={{
+            zIndex: 1,
+            position: 'relative',
+            display: 'flex',
+            gap: 3,
+            alignItems: { xs: 'flex-start', md: 'center' },
+            justifyContent: 'space-between',
+            flexDirection: { xs: 'column', md: 'row' },
+          }}
+        >
+          <Box sx={{ maxWidth: 610 }}>
+            <Typography
+              variant="overline"
               sx={{
-                width: 48,
-                height: 48,
-                flexShrink: 0,
-                display: 'flex',
-                borderRadius: '50%',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: `${s.color}.main`,
-                bgcolor: tint(s.color),
+                color: varAlpha(theme.vars.palette.common.whiteChannel, 0.76),
+                letterSpacing: 1.2,
               }}
             >
-              <Iconify icon={s.icon} width={26} />
-            </Box>
-            <Box sx={{ minWidth: 0 }}>
-              <Typography variant="h5">{s.value}</Typography>
-              <Typography variant="body2" noWrap sx={{ color: 'text.secondary' }}>
-                {t(`stats.${s.key}`)}
-              </Typography>
-            </Box>
-          </Card>
-        ))}
+              {t('today.eyebrow')}
+            </Typography>
+            <Typography variant="h3" sx={{ mt: 0.5, maxWidth: 520 }}>
+              {priorityItem
+                ? t('today.titleWithItem', { name: priorityItem.nama_produk })
+                : t('today.titleEmpty')}
+            </Typography>
+            <Typography
+              sx={{ mt: 1, color: varAlpha(theme.vars.palette.common.whiteChannel, 0.8) }}
+            >
+              {priorityStatus}
+            </Typography>
+          </Box>
+
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={1.25}
+            sx={{ width: { xs: 1, md: 'auto' } }}
+          >
+            <Button
+              component={RouterLink}
+              href={`${paths.dashboard.expirely.items}?action=scan`}
+              variant="contained"
+              color="inherit"
+              startIcon={<Iconify icon="solar:camera-add-bold" />}
+              sx={{
+                color: 'primary.dark',
+                bgcolor: 'common.white',
+                '&:hover': { bgcolor: 'grey.100' },
+              }}
+            >
+              {t('today.scan')}
+            </Button>
+            <Button
+              component={RouterLink}
+              href={`${paths.dashboard.expirely.items}?action=add`}
+              variant="outlined"
+              startIcon={<Iconify icon="mingcute:add-line" />}
+              sx={{
+                borderColor: varAlpha(theme.vars.palette.common.whiteChannel, 0.5),
+                color: 'common.white',
+              }}
+            >
+              {t('today.add')}
+            </Button>
+          </Stack>
+        </Box>
+      </Card>
+
+      <Box component="section" aria-label={t('stats.title')}>
+        <Typography variant="h6" sx={{ mb: 1.25 }}>
+          {t('stats.title')}
+        </Typography>
+        <MagicBento
+          items={bentoItems}
+          clickEffect={false}
+          enableMagnetism={false}
+          glowColor="0, 167, 111"
+          spotlightRadius={240}
+        />
       </Box>
 
       {error && (

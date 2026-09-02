@@ -3,6 +3,7 @@ import type { StorageLocation, SpoilageAssessment } from '../types';
 import { useRef, useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
@@ -187,7 +188,8 @@ export function PhotoUploadDialog({ open, onClose, onItemCreated }: Props) {
           )}
           {/* Upload area */}
           {!preview && (
-            <Box
+            <Card
+              variant="outlined"
               sx={{
                 border: '2px dashed',
                 borderColor: 'grey.400',
@@ -196,9 +198,14 @@ export function PhotoUploadDialog({ open, onClose, onItemCreated }: Props) {
                 textAlign: 'center',
                 cursor: 'pointer',
                 transition: 'border-color 0.2s, bgcolor 0.2s',
+                outline: 'none',
                 '&:hover': {
                   borderColor: 'primary.main',
                   bgcolor: 'action.hover',
+                },
+                '&:focus-visible': {
+                  borderColor: 'primary.main',
+                  boxShadow: (themeValue) => `0 0 0 3px ${themeValue.vars.palette.primary.main}`,
                 },
               }}
               role="button"
@@ -206,7 +213,10 @@ export function PhotoUploadDialog({ open, onClose, onItemCreated }: Props) {
               aria-label={t('photoUpload.chooseFile')}
               onClick={() => fileInputRef.current?.click()}
               onKeyDown={(event) => {
-                if (event.key === 'Enter' || event.key === ' ') fileInputRef.current?.click();
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  fileInputRef.current?.click();
+                }
               }}
             >
               <Iconify
@@ -220,7 +230,7 @@ export function PhotoUploadDialog({ open, onClose, onItemCreated }: Props) {
               <Typography variant="caption" sx={{ color: 'text.disabled' }}>
                 {t('photoUpload.formats')}
               </Typography>
-            </Box>
+            </Card>
           )}
 
           {/* Camera / Gallery buttons */}
@@ -247,7 +257,7 @@ export function PhotoUploadDialog({ open, onClose, onItemCreated }: Props) {
 
           {/* Preview */}
           {preview && (
-            <Box sx={{ position: 'relative' }}>
+            <Card variant="outlined" sx={{ position: 'relative', overflow: 'hidden', p: 1 }}>
               <Box
                 component="img"
                 src={preview}
@@ -271,7 +281,7 @@ export function PhotoUploadDialog({ open, onClose, onItemCreated }: Props) {
                   <Iconify icon="mingcute:close-line" width={18} />
                 </Button>
               )}
-            </Box>
+            </Card>
           )}
 
           {/* Progress */}
@@ -289,20 +299,18 @@ export function PhotoUploadDialog({ open, onClose, onItemCreated }: Props) {
 
           {/* Error */}
           {error && (
-            <Box
-              sx={{
-                p: 2,
-                borderRadius: 1,
-                bgcolor: 'error.lighter',
-                color: 'error.dark',
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: 1,
-              }}
+            <Alert
+              severity="error"
+              action={
+                preview && selectedFile ? (
+                  <Button color="inherit" size="small" onClick={handleUpload}>
+                    {t('actions.retry')}
+                  </Button>
+                ) : undefined
+              }
             >
-              <Iconify icon="solar:danger-triangle-bold" width={20} sx={{ mt: 0.25 }} />
-              <Typography variant="body2">{error}</Typography>
-            </Box>
+              {error}
+            </Alert>
           )}
 
           {assessment && (

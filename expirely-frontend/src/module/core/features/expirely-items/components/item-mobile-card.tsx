@@ -9,15 +9,9 @@ import CardContent from '@mui/material/CardContent';
 import CardActionArea from '@mui/material/CardActionArea';
 
 import { useTranslate } from 'src/locales';
-import { Label } from 'src/shared/ui/label';
 import { Iconify } from 'src/shared/ui/iconify';
 
-function daysUntil(expiryDate: string) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const expiry = new Date(`${expiryDate}T00:00:00`);
-  return Math.ceil((expiry.getTime() - today.getTime()) / 86400000);
-}
+import { UrgencyBadge } from './urgency-badge';
 
 type Props = {
   item: ExpirelyItem;
@@ -35,14 +29,6 @@ export function ItemMobileCard({
   onMarkWasted,
 }: Props) {
   const { t } = useTranslate('expirely');
-  const days = daysUntil(item.expiry_date);
-  const urgency = days <= 3 ? 'error' : days <= 7 ? 'warning' : 'success';
-  const urgencyLabel =
-    days < 0
-      ? t('status.expired')
-      : days === 0
-        ? t('status.today')
-        : t('status.daysLeft', { count: days });
 
   return (
     <Card variant="outlined">
@@ -62,9 +48,9 @@ export function ItemMobileCard({
                 {item.is_estimated ? t('estimation.estimated') : t('estimation.exact')}
               </Typography>
             </Stack>
-            <Label color={urgency} variant="soft" sx={{ flexShrink: 0, alignSelf: 'flex-start' }}>
-              {urgencyLabel}
-            </Label>
+            <Stack sx={{ flexShrink: 0, alignSelf: 'flex-start' }}>
+              <UrgencyBadge expiryDate={item.expiry_date} />
+            </Stack>
           </Stack>
         </CardContent>
       </CardActionArea>

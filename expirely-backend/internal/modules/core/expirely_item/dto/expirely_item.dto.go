@@ -35,6 +35,16 @@ type ItemResponse struct {
 	CreatedAt          time.Time           `json:"created_at"`
 	UpdatedAt          time.Time           `json:"updated_at"`
 	SpoilageAssessment *SpoilageAssessment `json:"spoilage_assessment,omitempty"`
+	EstimateBasis      *EstimateBasis      `json:"estimate_basis,omitempty"`
+}
+
+// EstimateBasis explains a category-based freshness estimate. It does not
+// capture the item's real storage history and must not be treated as a safety guarantee.
+type EstimateBasis struct {
+	Category         string `json:"category"`
+	EstimateDays     int    `json:"estimate_days"`
+	SourceURL        string `json:"source_url"`
+	SafetyDisclaimer string `json:"safety_disclaimer"`
 }
 
 // SpoilageAssessment is a photo-time risk indicator. It is not persisted and

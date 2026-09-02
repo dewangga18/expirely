@@ -3,6 +3,17 @@
   "greeting": "Welcome back, {{name}}",
   "greetingGuest": "Welcome to Expirely",
   "intro": "Track your household items' expiry dates. Never let food go to waste again.",
+  "today": {
+    "eyebrow": "Today’s focus",
+    "titleWithItem": "{{name}} deserves your attention first.",
+    "titleEmpty": "Start a small habit that keeps good food from going to waste.",
+    "statusEmpty": "Scan your first package or add an item already at home.",
+    "statusExpired": "This item has expired — check it before using it.",
+    "statusToday": "Its shelf life ends today.",
+    "statusDays": "Use it within the next {{count}} days.",
+    "scan": "Scan a photo",
+    "add": "Add an item"
+  },
   "useFirst": {
     "title": "Use first",
     "description": "The three items with the shortest shelf life.",
@@ -16,6 +27,9 @@
     "retry": "Reload"
   },
   "stats": {
+    "title": "Inventory overview",
+    "live": "Current snapshot",
+    "loading": "Loading…",
     "tracked": "Tracked Items",
     "expiringSoon": "Expiring Soon",
     "consumed": "Consumed",

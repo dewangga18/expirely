@@ -16,11 +16,26 @@
 @import '@fontsource-variable/inter';
 @import '@fontsource-variable/nunito-sans';
 
+/* Tailwind utilities only: Preflight remains disabled to preserve the existing MUI baseline. */
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
 /** **************************************
 * Plugins
 *************************************** */
 /* scrollbar */
 @import './shared/ui/scrollbar/styles.css';
+
+@theme {
+  --color-expirely-primary: #00a76f;
+  --color-expirely-primary-light: #5be49b;
+  --color-expirely-primary-dark: #007867;
+  --color-expirely-success: #22c55e;
+  --color-expirely-warning: #ffab00;
+  --color-expirely-danger: #ff5630;
+  --color-expirely-text-primary: #1c252e;
+  --color-expirely-text-secondary: #637381;
+}
 
 /** **************************************
 * Baseline

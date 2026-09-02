@@ -31,6 +31,10 @@ yarn dev               # Vite dev server (:8081)
 yarn build             # tsc --noEmit && vite build
 yarn lint              # eslint src/**
 yarn fm:check          # prettier --check
+
+# Repository root
+bash scripts/expirely.sh rebuild  # build frontend, then backend
+bash scripts/expirely.sh stop     # safely stop this repository's dev listeners
 ```
 
 ## Mandatory Rules

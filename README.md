@@ -66,6 +66,17 @@ docs/                        # architecture, PRD, handoff notes
 | `expirely-backend` | `make build` | `bin/` binary | `Dockerfile` provided |
 | `expirely-frontend` | `yarn build` (`tsc && vite build`) | `dist/` | `Dockerfile` + `nginx.conf` provided |
 
+## Development Utilities
+
+Run these commands from the repository root:
+
+```bash
+bash scripts/expirely.sh rebuild  # Build frontend, then backend
+bash scripts/expirely.sh stop     # Stop this repository's dev listeners on :8081 and :8080
+```
+
+`stop` verifies the listener's working directory before sending `SIGTERM`, so it refuses to stop another project that happens to use either port. Override the default ports only when needed with `EXPIRELY_FRONTEND_PORT` and `EXPIRELY_BACKEND_PORT`. The rebuild command uses a writable temporary Go cache by default; override it with `EXPIRELY_GO_CACHE` when needed.
+
 ## Troubleshooting
 
 - **DB connection refused** — confirm PostgreSQL is running and `DB_*` in `expirely-backend/.env` match; run `make db-setup`.

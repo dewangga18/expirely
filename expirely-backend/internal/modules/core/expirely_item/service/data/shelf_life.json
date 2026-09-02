@@ -1,0 +1,13 @@
+{
+  "buah_segar": { "kategori": "buah_segar", "estimasi_hari": 6, "contoh": ["pisang", "apel", "jeruk"], "source_url": "https://www.foodsafety.gov/food-safety-charts/cold-food-storage-charts" },
+  "sayur_hijau": { "kategori": "sayur_hijau", "estimasi_hari": 4, "contoh": ["bayam", "kangkung", "sawi"], "source_url": "https://www.foodsafety.gov/food-safety-charts/cold-food-storage-charts" },
+  "sayur_umbi": { "kategori": "sayur_umbi", "estimasi_hari": 18, "contoh": ["kentang", "wortel", "bawang"], "source_url": "https://www.foodsafety.gov/food-safety-charts/cold-food-storage-charts" },
+  "roti_tanpa_pengawet": { "kategori": "roti_tanpa_pengawet", "estimasi_hari": 3, "contoh": ["roti lokal", "roti bakery"], "source_url": "https://www.foodsafety.gov/food-safety-charts/cold-food-storage-charts" },
+  "telur_lepas": { "kategori": "telur_lepas", "estimasi_hari": 18, "contoh": ["telur ayam curah"], "source_url": "https://www.foodsafety.gov/food-safety-charts/cold-food-storage-charts" },
+  "daging_segar": { "kategori": "daging_segar", "estimasi_hari": 2, "contoh": ["daging sapi/ayam belum dibekukan"], "source_url": "https://www.foodsafety.gov/food-safety-charts/cold-food-storage-charts" },
+  "daging_beku": { "kategori": "daging_beku", "estimasi_hari": 90, "contoh": ["daging di freezer"], "source_url": "https://www.foodsafety.gov/food-safety-charts/cold-food-storage-charts" },
+  "ikan_segar": { "kategori": "ikan_segar", "estimasi_hari": 2, "contoh": ["ikan belum dibekukan"], "source_url": "https://www.foodsafety.gov/food-safety-charts/cold-food-storage-charts" },
+  "susu_segar_non_uht": { "kategori": "susu_segar_non_uht", "estimasi_hari": 4, "contoh": ["susu pasteurisasi"], "source_url": "https://www.foodsafety.gov/food-safety-charts/cold-food-storage-charts" },
+  "keju_segar": { "kategori": "keju_segar", "estimasi_hari": 10, "contoh": ["keju tanpa kemasan awet"], "source_url": "https://www.foodsafety.gov/food-safety-charts/cold-food-storage-charts" },
+  "default_unknown": { "kategori": "default_unknown", "estimasi_hari": 7, "contoh": [], "source_url": "https://www.foodsafety.gov/food-safety-charts/cold-food-storage-charts" }
+}

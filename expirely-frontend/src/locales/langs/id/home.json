@@ -3,6 +3,17 @@
   "greeting": "Selamat datang kembali, {{name}}",
   "greetingGuest": "Selamat Datang di Expirely",
   "intro": "Pantau masa simpan barang rumah tangga Anda. Jangan sampai makanan terbuang sia-sia.",
+  "today": {
+    "eyebrow": "Fokus hari ini",
+    "titleWithItem": "{{name}} butuh perhatianmu lebih dulu.",
+    "titleEmpty": "Mulai kebiasaan kecil yang mengurangi makanan terbuang.",
+    "statusEmpty": "Pindai kemasan pertama atau tambahkan barang yang sudah ada di rumah.",
+    "statusExpired": "Barang ini sudah kedaluwarsa — cek sebelum digunakan.",
+    "statusToday": "Masa simpannya habis hari ini.",
+    "statusDays": "Gunakan dalam {{count}} hari ke depan.",
+    "scan": "Pindai foto",
+    "add": "Tambah barang"
+  },
   "useFirst": {
     "title": "Gunakan lebih dulu",
     "description": "Tiga barang dengan masa simpan paling pendek.",
@@ -16,6 +27,9 @@
     "retry": "Muat ulang"
   },
   "stats": {
+    "title": "Ringkasan persediaan",
+    "live": "Ringkasan saat ini",
+    "loading": "Memuat…",
     "tracked": "Barang Dipantau",
     "expiringSoon": "Akan Kadaluarsa",
     "consumed": "Terpakai",

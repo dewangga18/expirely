@@ -3,6 +3,7 @@ const ROOTS = {
 };
 
 export const paths = {
+  landing: '/landing',
   faqs: '/faqs',
   auth: {
     jwt: {

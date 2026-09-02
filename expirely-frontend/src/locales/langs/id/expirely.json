@@ -50,6 +50,24 @@
     "estimated": "Estimasi",
     "kategori": "Kategori"
   },
+  "estimateBasis": {
+    "title": "Dasar perkiraan: sekitar {{count}} hari",
+    "disclaimer": "Ini pengingat perencanaan berdasarkan kategori, bukan jaminan keamanan pangan. Ikuti label kemasan dan jangan konsumsi bila kondisi makanan meragukan.",
+    "source": "Baca panduan penyimpanan pangan",
+    "tips": {
+      "buah_segar": { "storage": "Simpan sesuai jenis buah; pisahkan buah yang cepat matang dari bahan lain.", "useBy": "Periksa perubahan tekstur, bau, atau jamur sebelum digunakan." },
+      "sayur_hijau": { "storage": "Simpan dalam kulkas dan jaga tetap kering sampai akan digunakan.", "useBy": "Gunakan lebih dulu saat daun mulai layu atau lembap." },
+      "sayur_umbi": { "storage": "Simpan di tempat sejuk, kering, dan berventilasi; jauhkan dari kelembapan berlebih.", "useBy": "Buang jika ada jamur, bau tidak biasa, atau bagian membusuk." },
+      "roti_tanpa_pengawet": { "storage": "Simpan tertutup rapat; pindahkan ke freezer bila belum akan digunakan dalam waktu dekat.", "useBy": "Jangan hanya membuang bagian berjamur—hindari seluruh roti bila terlihat jamur." },
+      "telur_lepas": { "storage": "Simpan di kulkas pada suhu stabil dan hindari perubahan suhu berulang.", "useBy": "Gunakan sesuai kondisi dan aturan penyimpanan setempat; jangan gunakan telur retak atau berbau." },
+      "daging_segar": { "storage": "Simpan tertutup di bagian paling dingin kulkas dan cegah cairannya menyentuh bahan lain.", "useBy": "Masak atau bekukan segera; jangan gunakan bila kondisi atau bau meragukan." },
+      "daging_beku": { "storage": "Jaga tetap beku dan hindari siklus cair-beku berulang.", "useBy": "Batas ini terutama untuk kualitas; cairkan dengan aman sebelum digunakan." },
+      "ikan_segar": { "storage": "Simpan sangat dingin, tertutup, dan gunakan sesegera mungkin.", "useBy": "Jangan gunakan bila aroma, warna, atau tekstur meragukan." },
+      "susu_segar_non_uht": { "storage": "Simpan di kulkas dan segera kembalikan setelah digunakan.", "useBy": "Ikuti tanggal kemasan bila tersedia; buang bila kemasan rusak atau kondisi berubah." },
+      "keju_segar": { "storage": "Simpan tertutup di kulkas dan gunakan alat saji yang bersih.", "useBy": "Periksa kondisi produk dan ikuti petunjuk kemasan sebelum digunakan." },
+      "default_unknown": { "storage": "Gunakan petunjuk kemasan atau panduan khusus jenis produknya.", "useBy": "Tanggal ini hanya pengingat awal; periksa kondisi produk sebelum digunakan." }
+    }
+  },
   "actions": {
     "retry": "Coba lagi",
     "markConsumed": "Tandai Terpakai",
@@ -77,9 +95,26 @@
   "recommendation": {
     "title": "Ide untuk dipakai lebih dulu",
     "description": "Buat ide singkat untuk {{count}} barang yang akan kedaluwarsa dalam tujuh hari.",
+    "assistantLabel": "Expirely AI",
+    "analyzing": "Menganalisis barangmu...",
+    "resultsIntro": "Berikut ide untuk dipakai lebih dulu.",
+    "consumed": "Sudah ditandai terpakai",
     "getButton": "Buat ide penggunaan",
     "retry": "Coba Lagi",
     "close": "Tutup"
+  },
+  "onboardingTour": {
+    "addTitle": "Tambah barang",
+    "addDescription": "Masukkan barang secara manual jika tanggal kedaluwarsanya sudah diketahui.",
+    "photoTitle": "Pindai lewat foto",
+    "photoDescription": "Biarkan AI mengenali produk dan tanggal kedaluwarsanya dari foto.",
+    "listTitle": "Pantau stokmu",
+    "listDescription": "Status warna menunjukkan barang yang perlu dipakai lebih dulu.",
+    "recommendTitle": "Dapatkan ide penggunaan",
+    "recommendDescription": "Pilih ide AI untuk barang yang mendekati kedaluwarsa.",
+    "next": "Lanjut",
+    "previous": "Kembali",
+    "done": "Selesai"
   },
   "feedback": {
     "saved": "Barang {{name}} tersimpan.",
