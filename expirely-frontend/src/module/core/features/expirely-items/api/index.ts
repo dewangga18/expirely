@@ -1,7 +1,8 @@
 import type {
   QuotaInfo,
+  UsageIdea,
   ExpirelyItem,
-  Recommendation,
+  PhotoBatchResult,
   CreateItemPayload,
   UpdateItemPayload,
   CreateFromPhotoPayload,
@@ -58,6 +59,14 @@ export async function createFromPhoto(payload: CreateFromPhotoPayload): Promise<
   return unwrap(await axios.post<ApiEnvelope<ExpirelyItem>>('/core/v1/items/photo', payload));
 }
 
+export async function createBatchFromPhoto(
+  payload: CreateFromPhotoPayload
+): Promise<PhotoBatchResult> {
+  return unwrap(
+    await axios.post<ApiEnvelope<PhotoBatchResult>>('/core/v1/items/photo/batch', payload)
+  );
+}
+
 export async function updateItem(id: string, payload: UpdateItemPayload): Promise<ExpirelyItem> {
   return unwrap(await axios.patch<ApiEnvelope<ExpirelyItem>>(`/core/v1/items/${id}`, payload));
 }
@@ -71,15 +80,15 @@ export async function updateStatus(
   );
 }
 
-export async function getRecommendations(
+export async function getUsageIdeas(
   items: { id: string; nama_produk: string }[]
-): Promise<Recommendation[]> {
+): Promise<UsageIdea[]> {
   const result = unwrap(
-    await axios.post<ApiEnvelope<{ recommendations: Recommendation[] }>>('/core/v1/recommend', {
+    await axios.post<ApiEnvelope<{ usage_ideas: UsageIdea[] }>>('/core/v1/recommend', {
       items,
     })
   );
-  return result.recommendations;
+  return result.usage_ideas;
 }
 
 export async function getQuota(): Promise<QuotaInfo> {

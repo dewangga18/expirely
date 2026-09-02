@@ -43,46 +43,8 @@ func (h *Handler) CreateManual(c *gin.Context) {
 // CreateFromPhoto handles POST /api/v1/items/photo (AI recognition).
 // Accepts a base64-encoded image. Remote URLs are intentionally unsupported.
 func (h *Handler) CreateFromPhoto(c *gin.Context) {
-	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, 15<<20)
-	var req struct {
-		PhotoBase64     string `json:"photo_base64"`
-		MimeType        string `json:"mime_type"`
-		StorageLocation string `json:"storage_location" binding:"omitempty,oneof=room_temperature refrigerator freezer pantry unknown"`
-	}
-	if err := c.ShouldBindJSON(&req); err != nil {
-		var maxBytesErr *http.MaxBytesError
-		if errors.As(err, &maxBytesErr) {
-			response.Error(c, http.StatusRequestEntityTooLarge, "Image is too large", "Maximum request size is 15MB")
-			return
-		}
-		response.Error(c, http.StatusBadRequest, "Invalid request payload", err.Error())
-		return
-	}
-
-	if req.PhotoBase64 == "" {
-		response.Error(c, http.StatusBadRequest, "photo_base64 is required", "")
-		return
-	}
-	allowedTypes := map[string]bool{
-		"image/jpeg": true,
-		"image/png":  true,
-		"image/webp": true,
-		"image/gif":  true,
-	}
-	if req.MimeType == "" {
-		req.MimeType = "image/jpeg"
-	}
-	if !allowedTypes[req.MimeType] {
-		response.Error(c, http.StatusBadRequest, "Unsupported image type", "Use JPEG, PNG, WebP, or GIF")
-		return
-	}
-	decoded, err := base64.StdEncoding.DecodeString(req.PhotoBase64)
-	if err != nil {
-		response.Error(c, http.StatusBadRequest, "Invalid base64 image", "")
-		return
-	}
-	if len(decoded) > 10<<20 {
-		response.Error(c, http.StatusRequestEntityTooLarge, "Image is too large", "Maximum size is 10MB")
+	req, ok := h.bindPhotoRequest(c)
+	if !ok {
 		return
 	}
 
@@ -92,6 +54,53 @@ func (h *Handler) CreateFromPhoto(c *gin.Context) {
 		return
 	}
 	response.Success(c, http.StatusCreated, "Item created from photo", result)
+}
+
+// CreateBatchFromPhoto handles POST /api/v1/items/photo/batch (one photo, many items).
+func (h *Handler) CreateBatchFromPhoto(c *gin.Context) {
+	req, ok := h.bindPhotoRequest(c)
+	if !ok {
+		return
+	}
+
+	result, err := h.svc.CreateBatchFromPhoto(c.Request.Context(), middleware.MustGetUserID(c), req.PhotoBase64, req.MimeType, req.StorageLocation)
+	if err != nil {
+		h.handleError(c, err)
+		return
+	}
+	response.Success(c, http.StatusCreated, "Items created from photo", result)
+}
+
+func (h *Handler) bindPhotoRequest(c *gin.Context) (dto.CreateFromPhotoRequest, bool) {
+	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, 15<<20)
+	var req dto.CreateFromPhotoRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		var maxBytesErr *http.MaxBytesError
+		if errors.As(err, &maxBytesErr) {
+			response.Error(c, http.StatusRequestEntityTooLarge, "Image is too large", "Maximum request size is 15MB")
+			return dto.CreateFromPhotoRequest{}, false
+		}
+		response.Error(c, http.StatusBadRequest, "Invalid request payload", err.Error())
+		return dto.CreateFromPhotoRequest{}, false
+	}
+	if req.MimeType == "" {
+		req.MimeType = "image/jpeg"
+	}
+	allowedTypes := map[string]bool{"image/jpeg": true, "image/png": true, "image/webp": true, "image/gif": true}
+	if !allowedTypes[req.MimeType] {
+		response.Error(c, http.StatusBadRequest, "Unsupported image type", "Use JPEG, PNG, WebP, or GIF")
+		return dto.CreateFromPhotoRequest{}, false
+	}
+	decoded, err := base64.StdEncoding.DecodeString(req.PhotoBase64)
+	if err != nil {
+		response.Error(c, http.StatusBadRequest, "Invalid base64 image", "")
+		return dto.CreateFromPhotoRequest{}, false
+	}
+	if len(decoded) > 10<<20 {
+		response.Error(c, http.StatusRequestEntityTooLarge, "Image is too large", "Maximum size is 10MB")
+		return dto.CreateFromPhotoRequest{}, false
+	}
+	return req, true
 }
 
 // List handles GET /api/v1/items.

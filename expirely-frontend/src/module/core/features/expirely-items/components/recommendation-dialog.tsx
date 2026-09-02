@@ -1,4 +1,4 @@
-import type { ExpirelyItem, Recommendation } from '../types';
+import type { UsageIdea, ExpirelyItem } from '../types';
 
 import { useState, useEffect, useCallback } from 'react';
 
@@ -22,7 +22,7 @@ import { MotionDialog } from 'src/shared/ui/animate';
 
 import { Button as UiButton } from 'src/components/ui/button';
 
-import { getRecommendations } from '../api';
+import { getUsageIdeas } from '../api';
 
 // ----------------------------------------------------------------------
 
@@ -40,28 +40,28 @@ export function RecommendationDialog({ open, items, onClose, onGenerated, onMark
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [loading, setLoading] = useState(false);
-  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [usageIdeas, setUsageIdeas] = useState<UsageIdea[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [consumedIds, setConsumedIds] = useState<string[]>([]);
   const [consumingIds, setConsumingIds] = useState<string[]>([]);
 
   useEffect(() => {
     if (!open) {
-      setRecommendations([]);
+      setUsageIdeas([]);
       setError(null);
       setConsumedIds([]);
       setConsumingIds([]);
     }
   }, [open, items]);
 
-  const handleGetRecommendations = useCallback(async () => {
+  const handleGetUsageIdeas = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const result = await getRecommendations(
+      const result = await getUsageIdeas(
         items.map((it) => ({ id: it.id, nama_produk: it.nama_produk }))
       );
-      setRecommendations(result);
+      setUsageIdeas(result);
       onGenerated?.();
     } catch (err) {
       setError(err instanceof Error ? err.message : t('errors.recommendFailed'));
@@ -145,9 +145,9 @@ export function RecommendationDialog({ open, items, onClose, onGenerated, onMark
             </Box>
           </Stack>
 
-          {!recommendations.length && !loading && !error && (
+          {!usageIdeas.length && !loading && !error && (
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <UiButton onClick={handleGetRecommendations} disabled={items.length === 0}>
+              <UiButton onClick={handleGetUsageIdeas} disabled={items.length === 0}>
                 <Iconify icon="solar:tea-cup-bold" width={18} />
                 {t('recommendation.getButton')}
               </UiButton>
@@ -194,69 +194,85 @@ export function RecommendationDialog({ open, items, onClose, onGenerated, onMark
               <Typography color="error" sx={{ mb: 2 }}>
                 {error}
               </Typography>
-              <UiButton variant="outline" onClick={handleGetRecommendations}>
+              <UiButton variant="outline" onClick={handleGetUsageIdeas}>
                 {t('recommendation.retry')}
               </UiButton>
             </Box>
           )}
 
-          {recommendations.length > 0 && (
+          {usageIdeas.length > 0 && (
             <Stack spacing={1.5}>
               <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 600 }}>
                 {t('recommendation.resultsIntro')}
               </Typography>
-              {recommendations.map((rec) => {
-                const consumed = consumedIds.includes(rec.item_id);
-                const consuming = consumingIds.includes(rec.item_id);
+              {usageIdeas.map((idea) => (
+                <Stack
+                  key={`${idea.title}-${idea.items.map((item) => item.id).join('-')}`}
+                  direction="row"
+                  spacing={1.25}
+                  alignItems="flex-start"
+                >
+                  <Box
+                    sx={{
+                      display: 'grid',
+                      width: 32,
+                      height: 32,
+                      flexShrink: 0,
+                      placeItems: 'center',
+                      borderRadius: '50%',
+                      color: 'primary.contrastText',
+                      bgcolor: 'primary.main',
+                    }}
+                  >
+                    <Iconify icon="solar:tea-cup-bold" width={18} />
+                  </Box>
+                  <Card variant="outlined" sx={{ flex: 1, borderRadius: 2 }}>
+                    <CardContent sx={{ '&:last-child': { pb: 2 } }}>
+                      <Stack spacing={1.5}>
+                        <Box>
+                          <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                            {idea.title}
+                          </Typography>
+                          <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
+                            {idea.description}
+                          </Typography>
+                        </Box>
+                        {onMarkConsumed && (
+                          <Stack spacing={0.75}>
+                            <Typography
+                              variant="caption"
+                              sx={{ color: 'text.secondary', fontWeight: 700 }}
+                            >
+                              {t('recommendation.itemsLabel')}
+                            </Typography>
+                            <Stack direction="row" flexWrap="wrap" gap={0.75}>
+                              {idea.items.map((item) => {
+                                const consumed = consumedIds.includes(item.id);
+                                const consuming = consumingIds.includes(item.id);
 
-                return (
-                  <Stack key={rec.item_id} direction="row" spacing={1.25} alignItems="flex-start">
-                    <Box
-                      sx={{
-                        display: 'grid',
-                        width: 32,
-                        height: 32,
-                        flexShrink: 0,
-                        placeItems: 'center',
-                        borderRadius: '50%',
-                        color: 'primary.contrastText',
-                        bgcolor: 'primary.main',
-                      }}
-                    >
-                      <Iconify icon="solar:tea-cup-bold" width={18} />
-                    </Box>
-                    <Card variant="outlined" sx={{ flex: 1, borderRadius: 2 }}>
-                      <CardContent sx={{ '&:last-child': { pb: 2 } }}>
-                        <Stack spacing={1.5}>
-                          <Box>
-                            <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-                              {rec.nama_produk}
-                            </Typography>
-                            <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
-                              {rec.rekomendasi}
-                            </Typography>
-                          </Box>
-                          {onMarkConsumed && (
-                            <Box>
-                              <UiButton
-                                size="sm"
-                                variant={consumed ? 'secondary' : 'outline'}
-                                disabled={consumed || consuming}
-                                onClick={() => handleMarkConsumed(rec.item_id)}
-                              >
-                                <Iconify icon="solar:check-circle-bold" width={16} />
-                                {consumed
-                                  ? t('recommendation.consumed')
-                                  : t('actions.markConsumed')}
-                              </UiButton>
-                            </Box>
-                          )}
-                        </Stack>
-                      </CardContent>
-                    </Card>
-                  </Stack>
-                );
-              })}
+                                return (
+                                  <UiButton
+                                    key={item.id}
+                                    size="sm"
+                                    variant={consumed ? 'secondary' : 'outline'}
+                                    disabled={consumed || consuming}
+                                    onClick={() => handleMarkConsumed(item.id)}
+                                  >
+                                    <Iconify icon="solar:check-circle-bold" width={16} />
+                                    {consumed
+                                      ? item.nama_produk
+                                      : `${t('recommendation.markIngredient')}: ${item.nama_produk}`}
+                                  </UiButton>
+                                );
+                              })}
+                            </Stack>
+                          </Stack>
+                        )}
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                </Stack>
+              ))}
             </Stack>
           )}
         </Stack>

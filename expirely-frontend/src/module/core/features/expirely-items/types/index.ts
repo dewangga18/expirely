@@ -62,10 +62,20 @@ export type CreateFromPhotoPayload = {
   storage_location: StorageLocation;
 };
 
-export type Recommendation = {
-  item_id: string;
+export type PhotoBatchResult = {
+  items: ExpirelyItem[];
+  total: number;
+};
+
+export type UsageIdeaItem = {
+  id: string;
   nama_produk: string;
-  rekomendasi: string;
+};
+
+export type UsageIdea = {
+  title: string;
+  description: string;
+  items: UsageIdeaItem[];
 };
 
 export type QuotaInfo = {

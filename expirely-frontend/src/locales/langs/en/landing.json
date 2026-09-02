@@ -7,7 +7,6 @@
       "features": "Features",
       "demo": "Interactive Demo",
       "howItWorks": "How It Works",
-      "calculator": "Savings Calculator",
       "sponsors": "Sponsors & Ads",
       "testimonials": "Reviews",
       "faq": "FAQ"
@@ -125,16 +124,6 @@
         "description": "Unlimited free manual tracking, plus daily AI quotas expandable via rewarded video ads."
       }
     ]
-  },
-  "calculator": {
-    "eyebrow": "Savings Calculator",
-    "title": "How Much Money Can You Save?",
-    "description": "The average household wastes 15–20% of groceries simply by forgetting expiration dates. See your potential savings with Expirely.",
-    "monthlyLabel": "Monthly Grocery Spend ($ / Rp):",
-    "yearlySavings": "Estimated Annual Savings:",
-    "foodSavedLabel": "Food Saved:",
-    "foodSavedValue": "~24–40 items per year",
-    "cta": "Start Saving Today"
   },
   "ads": {
     "eyebrow": "Sponsors & Business Model",

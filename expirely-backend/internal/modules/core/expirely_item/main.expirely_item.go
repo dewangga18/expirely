@@ -37,6 +37,7 @@ func (m *Module) SetupRoutes(router *gin.RouterGroup) {
 	{
 		items.POST("", m.Handler.CreateManual)
 		items.POST("/photo", m.Handler.CreateFromPhoto)
+		items.POST("/photo/batch", m.Handler.CreateBatchFromPhoto)
 		items.GET("", m.Handler.List)
 		items.GET("/:id", m.Handler.GetByID)
 		items.PATCH("/:id", m.Handler.Update)

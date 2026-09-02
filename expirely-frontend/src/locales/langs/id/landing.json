@@ -7,7 +7,6 @@
       "features": "Fitur",
       "demo": "Demo Interaktif",
       "howItWorks": "Cara Kerja",
-      "calculator": "Kalkulator Hemat",
       "sponsors": "Sponsor & Ads",
       "testimonials": "Ulasan",
       "faq": "FAQ"
@@ -125,16 +124,6 @@
         "description": "Pencatatan manual gratis selamanya, dilengkapi kuota harian AI yang dapat ditambah melalui rewarded ads."
       }
     ]
-  },
-  "calculator": {
-    "eyebrow": "Kalkulator Penghematan",
-    "title": "Berapa Banyak Uang yang Bisa Anda Hemat?",
-    "description": "Rata-rata rumah tangga membuang 15–20% belanjaan karena lupa tanggal kedaluwarsa. Lihat potensi penghematan Anda bersama Expirely.",
-    "monthlyLabel": "Pengeluaran Belanja Bulanan (Rp):",
-    "yearlySavings": "Estimasi Penghematan Tahunan:",
-    "foodSavedLabel": "Makanan Terselamatkan:",
-    "foodSavedValue": "~24–40 item per tahun",
-    "cta": "Mulai Hemat Hari Ini"
   },
   "ads": {
     "eyebrow": "Sponsor & Business Model",

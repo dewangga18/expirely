@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"strings"
 	"testing"
 	"time"
@@ -19,6 +20,22 @@ func TestGeminiRequestKeepsAPIKeyOutOfURL(t *testing.T) {
 	}
 	if got := request.Header.Get("x-goog-api-key"); got != "test-secret-key" {
 		t.Fatalf("x-goog-api-key header = %q", got)
+	}
+}
+
+func TestUsageIdeasResponseAndPrompt(t *testing.T) {
+	prompt := geminiRecommendPrompt([]string{"Bayam", "Telur"})
+	if !strings.Contains(prompt, "0. Bayam") || !strings.Contains(prompt, "1. Telur") {
+		t.Fatalf("prompt must preserve item indexes: %s", prompt)
+	}
+
+	var response aiUsageIdeaResponse
+	payload := `{"ideas":[{"title":"Tumis bayam telur","description":"Masak keduanya untuk lauk cepat.","item_indexes":[0,1]}]}`
+	if err := json.Unmarshal(extractJSONObject(payload), &response); err != nil {
+		t.Fatalf("parse usage ideas: %v", err)
+	}
+	if len(response.Ideas) != 1 || len(response.Ideas[0].ItemIndexes) != 2 {
+		t.Fatalf("unexpected usage ideas: %+v", response)
 	}
 }
 
@@ -92,5 +109,38 @@ func TestBuildSpoilageAssessmentForcesHighRiskWhenDiscardIsVisible(t *testing.T)
 	}, "refrigerator")
 	if assessment.RiskLevel != "high" || assessment.StorageLocation != "refrigerator" {
 		t.Fatalf("unexpected assessment: %+v", assessment)
+	}
+}
+
+func TestBatchVisionResponseParsesDistinctItems(t *testing.T) {
+	response := `{"items":[{"nama_produk":"Bayam","ada_tanggal_tercetak":false,"kategori":"sayur_hijau"},{"nama_produk":"Susu","ada_tanggal_tercetak":true,"expiry_date":"2026-09-10","kategori":"susu_segar_non_uht"}]}`
+
+	var batch aiVisionBatchResult
+	if err := json.Unmarshal(extractJSONObject(response), &batch); err != nil {
+		t.Fatalf("parse batch response: %v", err)
+	}
+	if len(batch.Items) != 2 || batch.Items[0].NamaProduk != "Bayam" || batch.Items[1].ExpiryDate != "2026-09-10" {
+		t.Fatalf("unexpected batch result: %+v", batch)
+	}
+}
+
+func TestBatchVisionAllowsEnoughOutputForManyItems(t *testing.T) {
+	if batchVisionMaxOutputTokens <= singleVisionMaxOutputTokens {
+		t.Fatalf(
+			"batch output limit (%d) must exceed single-item limit (%d)",
+			batchVisionMaxOutputTokens,
+			singleVisionMaxOutputTokens,
+		)
+	}
+}
+
+func TestNewPhotoItemUsesEstimatedExpiryForFreshFood(t *testing.T) {
+	now := time.Date(2026, time.September, 1, 0, 0, 0, 0, time.UTC)
+	item, err := newPhotoItem("user-id", &aiVisionResult{NamaProduk: "Bayam", Kategori: "sayur_hijau"}, now)
+	if err != nil {
+		t.Fatalf("new photo item: %v", err)
+	}
+	if !item.IsEstimated || item.ExpiryDate != now.AddDate(0, 0, 4) {
+		t.Fatalf("unexpected estimated item: %+v", item)
 	}
 }

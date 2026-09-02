@@ -1,4 +1,4 @@
-import type { StorageLocation, SpoilageAssessment } from '../types';
+import type { ExpirelyItem, StorageLocation } from '../types';
 
 import { useRef, useState, useCallback } from 'react';
 
@@ -24,7 +24,7 @@ import { toast } from 'src/shared/ui/snackbar';
 import { Iconify } from 'src/shared/ui/iconify';
 import { MotionDialog } from 'src/shared/ui/animate';
 
-import { createFromPhoto } from '../api';
+import { createBatchFromPhoto } from '../api';
 
 // ----------------------------------------------------------------------
 
@@ -58,7 +58,7 @@ export function PhotoUploadDialog({ open, onClose, onItemCreated }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   const [storageLocation, setStorageLocation] = useState<StorageLocation>('unknown');
-  const [assessment, setAssessment] = useState<SpoilageAssessment | null>(null);
+  const [recognizedItems, setRecognizedItems] = useState<ExpirelyItem[]>([]);
 
   const reset = useCallback(() => {
     setPreview(null);
@@ -67,7 +67,7 @@ export function PhotoUploadDialog({ open, onClose, onItemCreated }: Props) {
     setProgress(0);
     setUploading(false);
     setStorageLocation('unknown');
-    setAssessment(null);
+    setRecognizedItems([]);
   }, []);
 
   const handleClose = useCallback(() => {
@@ -128,21 +128,16 @@ export function PhotoUploadDialog({ open, onClose, onItemCreated }: Props) {
       setProgress(30);
 
       setProgress(70);
-      const item = await createFromPhoto({
+      const result = await createBatchFromPhoto({
         photo_base64: base64Data,
         mime_type: mimeType,
         storage_location: storageLocation,
       });
       setProgress(100);
 
-      toast.success(
-        t('photoUpload.success', {
-          name: item.nama_produk,
-          days: Math.ceil((new Date(item.expiry_date).getTime() - Date.now()) / 86400000),
-        })
-      );
+      toast.success(t('photoUpload.successBatch', { count: result.total }));
 
-      setAssessment(item.spoilage_assessment ?? null);
+      setRecognizedItems(result.items);
       setSelectedFile(null);
       setPreview(null);
       onItemCreated?.();
@@ -170,7 +165,7 @@ export function PhotoUploadDialog({ open, onClose, onItemCreated }: Props) {
 
       <DialogContent dividers sx={{ p: { xs: 2, md: 3 } }}>
         <Stack spacing={3}>
-          {!assessment && (
+          {recognizedItems.length === 0 && (
             <TextField
               select
               fullWidth
@@ -313,30 +308,49 @@ export function PhotoUploadDialog({ open, onClose, onItemCreated }: Props) {
             </Alert>
           )}
 
-          {assessment && (
-            <Alert
-              severity={
-                assessment.risk_level === 'high'
-                  ? 'error'
-                  : assessment.risk_level === 'moderate'
-                    ? 'warning'
-                    : 'success'
-              }
-            >
-              <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                {t(`spoilage.risk.${assessment.risk_level}`)}
-              </Typography>
-              <Typography variant="body2" sx={{ mb: 0.5 }}>
-                {t(`spoilage.condition.${assessment.visual_condition}`)} {assessment.recommendation}
-              </Typography>
-              <Typography variant="caption">{assessment.safety_disclaimer}</Typography>
-            </Alert>
+          {recognizedItems.length > 0 && (
+            <Stack spacing={1.5}>
+              <Alert severity="success">
+                {t('photoUpload.batchSummary', { count: recognizedItems.length })}
+              </Alert>
+              {recognizedItems.map((item) => {
+                const assessment = item.spoilage_assessment;
+
+                return (
+                  <Card key={item.id} variant="outlined" sx={{ p: 1.5 }}>
+                    <Typography variant="subtitle2">{item.nama_produk}</Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {item.is_estimated
+                        ? t('photoUpload.estimatedExpiry', { date: item.expiry_date })
+                        : t('photoUpload.labelExpiry', { date: item.expiry_date })}
+                    </Typography>
+                    {assessment && (
+                      <Alert
+                        sx={{ mt: 1.25 }}
+                        severity={
+                          assessment.risk_level === 'high'
+                            ? 'error'
+                            : assessment.risk_level === 'moderate'
+                              ? 'warning'
+                              : 'success'
+                        }
+                      >
+                        <Typography variant="body2">
+                          {t(`spoilage.condition.${assessment.visual_condition}`)}{' '}
+                          {assessment.recommendation}
+                        </Typography>
+                      </Alert>
+                    )}
+                  </Card>
+                );
+              })}
+            </Stack>
           )}
         </Stack>
       </DialogContent>
 
       <DialogActions>
-        {preview && !uploading && !assessment && (
+        {preview && !uploading && recognizedItems.length === 0 && (
           <Button
             variant="contained"
             startIcon={<Iconify icon="solar:gallery-add-bold" />}
@@ -346,7 +360,7 @@ export function PhotoUploadDialog({ open, onClose, onItemCreated }: Props) {
             {t('photoUpload.recognize')}
           </Button>
         )}
-        {assessment && (
+        {recognizedItems.length > 0 && (
           <Button variant="contained" onClick={handleClose}>
             {tCommon('actions.close')}
           </Button>

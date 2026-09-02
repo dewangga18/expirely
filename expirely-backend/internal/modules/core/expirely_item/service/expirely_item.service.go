@@ -32,6 +32,7 @@ var (
 const (
 	dailyRecognitionLimit    = 2
 	dailyRecommendationLimit = 2
+	maxItemsPerPhoto         = 12
 	estimateSafetyDisclaimer = "This category estimate is a planning reminder, not a food-safety guarantee. Follow the package label and discard food when its condition is doubtful."
 )
 
@@ -113,42 +114,10 @@ func (s *Service) CreateFromPhoto(ctx context.Context, userID, photoBase64, mime
 		s.releaseQuota(ctx, userID, today, "recognition")
 		return nil, fmt.Errorf("AI recognition failed: %w", err)
 	}
-	aiResult.NamaProduk = strings.TrimSpace(aiResult.NamaProduk)
-	if aiResult.NamaProduk == "" || len(aiResult.NamaProduk) > 255 {
+	item, err := newPhotoItem(userID, aiResult, time.Now())
+	if err != nil {
 		s.releaseQuota(ctx, userID, today, "recognition")
-		return nil, errors.New("AI returned an invalid product name")
-	}
-	if len(aiResult.Kategori) > 100 {
-		s.releaseQuota(ctx, userID, today, "recognition")
-		return nil, errors.New("AI returned an invalid category")
-	}
-
-	// Build item from AI result
-	item := &domain.ExpirelyItem{
-		ID:         uuid.New().String(),
-		UserID:     userID,
-		NamaProduk: aiResult.NamaProduk,
-		Source:     "ai_photo",
-		Status:     domain.StatusActive,
-	}
-
-	if aiResult.AdaTanggalTercetak && aiResult.ExpiryDate != "" {
-		expiryDate, err := time.Parse("2006-01-02", aiResult.ExpiryDate)
-		if err != nil {
-			s.releaseQuota(ctx, userID, today, "recognition")
-			return nil, fmt.Errorf("AI returned invalid date: %w", err)
-		}
-		item.ExpiryDate = expiryDate
-		item.IsEstimated = false
-	} else if aiResult.Kategori != "" {
-		expiry, category := estimateExpiry(aiResult.Kategori, time.Now())
-		item.Kategori = &category
-		item.ExpiryDate = expiry
-		item.IsEstimated = true
-	} else {
-		// Fallback: default 7 days
-		item.ExpiryDate = time.Now().AddDate(0, 0, 7)
-		item.IsEstimated = true
+		return nil, err
 	}
 
 	if err := s.repo.Create(ctx, item); err != nil {
@@ -159,6 +128,88 @@ func (s *Service) CreateFromPhoto(ctx context.Context, userID, photoBase64, mime
 	response := toResponse(item)
 	response.SpoilageAssessment = buildSpoilageAssessment(aiResult, storageLocation)
 	return response, nil
+}
+
+// CreateBatchFromPhoto detects multiple distinct items from one photo. It consumes one
+// recognition quota because the request contains one image and one Gemini call.
+func (s *Service) CreateBatchFromPhoto(ctx context.Context, userID, photoBase64, mimeType, storageLocation string) (*dto.PhotoBatchResponse, error) {
+	storageLocation, err := normalizeStorageLocation(storageLocation)
+	if err != nil {
+		return nil, err
+	}
+	today := time.Now().Format("2006-01-02")
+	reserved, err := s.repo.TryConsumeQuota(ctx, userID, today, "recognition", dailyRecognitionLimit)
+	if err != nil {
+		return nil, err
+	}
+	if !reserved {
+		return nil, ErrQuotaExceeded
+	}
+	if mimeType == "" {
+		mimeType = "image/jpeg"
+	}
+
+	aiResults, err := callAIVisionBatchBase64(ctx, photoBase64, mimeType, storageLocation)
+	if err != nil {
+		s.releaseQuota(ctx, userID, today, "recognition")
+		return nil, fmt.Errorf("AI batch recognition failed: %w", err)
+	}
+	if len(aiResults) == 0 {
+		s.releaseQuota(ctx, userID, today, "recognition")
+		return nil, errors.New("AI did not identify any items in the photo")
+	}
+	if len(aiResults) > maxItemsPerPhoto {
+		aiResults = aiResults[:maxItemsPerPhoto]
+	}
+
+	items := make([]dto.ItemResponse, 0, len(aiResults))
+	for _, aiResult := range aiResults {
+		item, itemErr := newPhotoItem(userID, &aiResult, time.Now())
+		if itemErr != nil {
+			continue
+		}
+		if err := s.repo.Create(ctx, item); err != nil {
+			return nil, err
+		}
+		itemResponse := toResponse(item)
+		itemResponse.SpoilageAssessment = buildSpoilageAssessment(&aiResult, storageLocation)
+		items = append(items, *itemResponse)
+	}
+	if len(items) == 0 {
+		s.releaseQuota(ctx, userID, today, "recognition")
+		return nil, errors.New("AI did not return valid items")
+	}
+
+	return &dto.PhotoBatchResponse{Items: items, Total: len(items)}, nil
+}
+
+func newPhotoItem(userID string, aiResult *aiVisionResult, now time.Time) (*domain.ExpirelyItem, error) {
+	aiResult.NamaProduk = strings.TrimSpace(aiResult.NamaProduk)
+	if aiResult.NamaProduk == "" || len(aiResult.NamaProduk) > 255 {
+		return nil, errors.New("AI returned an invalid product name")
+	}
+	if len(aiResult.Kategori) > 100 {
+		return nil, errors.New("AI returned an invalid category")
+	}
+	item := &domain.ExpirelyItem{ID: uuid.New().String(), UserID: userID, NamaProduk: aiResult.NamaProduk, Source: "ai_photo", Status: domain.StatusActive}
+	if aiResult.AdaTanggalTercetak && aiResult.ExpiryDate != "" {
+		expiryDate, err := time.Parse("2006-01-02", aiResult.ExpiryDate)
+		if err != nil {
+			return nil, fmt.Errorf("AI returned invalid date: %w", err)
+		}
+		item.ExpiryDate = expiryDate
+		return item, nil
+	}
+	if aiResult.Kategori != "" {
+		expiry, category := estimateExpiry(aiResult.Kategori, now)
+		item.Kategori = &category
+		item.ExpiryDate = expiry
+		item.IsEstimated = true
+		return item, nil
+	}
+	item.ExpiryDate = now.AddDate(0, 0, shelfLifeData["default_unknown"].EstimasiHari)
+	item.IsEstimated = true
+	return item, nil
 }
 
 var validStorageLocations = map[string]struct{}{
@@ -306,24 +357,37 @@ func (s *Service) Recommend(ctx context.Context, userID string, req *dto.Recomme
 		productNames = append(productNames, item.NamaProduk)
 	}
 
-	recommendations, err := callAIRecommendation(ctx, productNames)
+	ideas, err := callAIRecommendation(ctx, productNames)
 	if err != nil {
 		s.releaseQuota(ctx, userID, today, "recommendation")
 		return nil, fmt.Errorf("AI recommendation failed: %w", err)
 	}
 
-	// Map recommendations back to item IDs
-	resp := &dto.RecommendResponse{
-		Recommendations: make([]dto.Recommendation, 0),
-	}
-	for i, item := range items {
-		if i < len(recommendations) {
-			resp.Recommendations = append(resp.Recommendations, dto.Recommendation{
-				ItemID:      item.ID,
-				NamaProduk:  item.NamaProduk,
-				Rekomendasi: recommendations[i],
+	resp := &dto.RecommendResponse{UsageIdeas: make([]dto.UsageIdea, 0, len(ideas))}
+	for _, idea := range ideas {
+		usageItems := make([]dto.UsageIdeaItem, 0, len(idea.ItemIndexes))
+		seenIndexes := make(map[int]struct{})
+		for _, index := range idea.ItemIndexes {
+			if index < 0 || index >= len(items) {
+				continue
+			}
+			if _, seen := seenIndexes[index]; seen {
+				continue
+			}
+			seenIndexes[index] = struct{}{}
+			usageItems = append(usageItems, dto.UsageIdeaItem{ID: items[index].ID, NamaProduk: items[index].NamaProduk})
+		}
+		if title := strings.TrimSpace(idea.Title); title != "" && len(usageItems) > 0 {
+			resp.UsageIdeas = append(resp.UsageIdeas, dto.UsageIdea{
+				Title:       title,
+				Description: strings.TrimSpace(idea.Description),
+				Items:       usageItems,
 			})
 		}
+	}
+	if len(resp.UsageIdeas) == 0 {
+		s.releaseQuota(ctx, userID, today, "recommendation")
+		return nil, errors.New("AI did not return usable usage ideas")
 	}
 
 	return resp, nil
@@ -427,6 +491,15 @@ type aiVisionResult struct {
 	RekomendasiPenyimpanan string `json:"rekomendasi_penyimpanan"`
 }
 
+type aiVisionBatchResult struct {
+	Items []aiVisionResult `json:"items"`
+}
+
+const (
+	singleVisionMaxOutputTokens = 1024
+	batchVisionMaxOutputTokens  = 4096
+)
+
 // geminiContentResponse is the top-level Gemini API response shape.
 type geminiContentResponse struct {
 	Candidates []struct {
@@ -516,11 +589,62 @@ Nilai kondisi visual hanya dari tanda yang benar-benar terlihat. Jangan menyatak
 Hanya kembalikan JSON, tanpa teks lain.`, storageLocation)
 }
 
+func geminiVisionBatchPrompt(storageLocation string) string {
+	return fmt.Sprintf(`Analisis foto makanan/barang rumah tangga ini. Lokasi penyimpanan yang dilaporkan pengguna: %s.
+Foto dapat berisi beberapa produk. Identifikasi hanya produk berbeda yang benar-benar terlihat; jangan membuat item dari objek yang tertutup, tidak terbaca, atau hanya diduga ada.
+Kembalikan HANYA JSON dengan format:
+{"items":[{"nama_produk":"nama produk","ada_tanggal_tercetak":true/false,"expiry_date":"YYYY-MM-DD","kategori":"kategori_barang","kondisi_visual":"normal|watch|discard|unclear","risiko_pembusukan":"low|moderate|high","rekomendasi_penyimpanan":"saran singkat"}]}
+
+Jika ada tanggal kedaluwarsa tercetak untuk produk tersebut, isi expiry_date dan set ada_tanggal_tercetak: true. Jika tanggal tidak terlihat atau barang segar, set false dan gunakan kategori bila yakin.
+Kategori yang dikenali: buah_segar, sayur_hijau, sayur_umbi, roti_tanpa_pengawet, telur_lepas, daging_segar, daging_beku, ikan_segar, susu_segar_non_uht, keju_segar.
+Jangan menyatakan makanan aman dikonsumsi. Bila terlihat jamur, lendir, kebocoran, perubahan warna ekstrem, atau kondisi tidak jelas, gunakan risiko tinggi atau sedang dan sarankan tidak mengonsumsi bila ragu. Maksimum %d item. Hanya kembalikan JSON, tanpa teks lain.`, storageLocation, maxItemsPerPhoto)
+}
+
 // callAIVisionBase64 sends base64-encoded image data to Gemini Vision.
 func callAIVisionBase64(ctx context.Context, base64Data, mimeType, storageLocation string) (*aiVisionResult, error) {
-	apiKey, err := nextGeminiKey()
+	text, err := callGeminiVision(
+		ctx,
+		base64Data,
+		mimeType,
+		geminiVisionPrompt(storageLocation),
+		singleVisionMaxOutputTokens,
+	)
 	if err != nil {
 		return nil, err
+	}
+	var result aiVisionResult
+	if err := json.Unmarshal(extractJSONObject(text), &result); err != nil {
+		return nil, fmt.Errorf("failed to parse AI response JSON: %w", err)
+	}
+	return &result, nil
+}
+
+func callAIVisionBatchBase64(ctx context.Context, base64Data, mimeType, storageLocation string) ([]aiVisionResult, error) {
+	text, err := callGeminiVision(
+		ctx,
+		base64Data,
+		mimeType,
+		geminiVisionBatchPrompt(storageLocation),
+		batchVisionMaxOutputTokens,
+	)
+	if err != nil {
+		return nil, err
+	}
+	var result aiVisionBatchResult
+	if err := json.Unmarshal(extractJSONObject(text), &result); err != nil {
+		return nil, fmt.Errorf("failed to parse AI batch response JSON: %w", err)
+	}
+	return result.Items, nil
+}
+
+func callGeminiVision(
+	ctx context.Context,
+	base64Data, mimeType, prompt string,
+	maxOutputTokens int,
+) (string, error) {
+	apiKey, err := nextGeminiKey()
+	if err != nil {
+		return "", err
 	}
 
 	body := map[string]interface{}{
@@ -534,13 +658,13 @@ func callAIVisionBase64(ctx context.Context, base64Data, mimeType, storageLocati
 						},
 					},
 					{
-						"text": geminiVisionPrompt(storageLocation),
+						"text": prompt,
 					},
 				},
 			},
 		},
 		"generationConfig": map[string]interface{}{
-			"maxOutputTokens":  1024,
+			"maxOutputTokens":  maxOutputTokens,
 			"responseMimeType": "application/json",
 			"thinkingConfig": map[string]interface{}{
 				"thinkingLevel": "minimal",
@@ -551,32 +675,32 @@ func callAIVisionBase64(ctx context.Context, base64Data, mimeType, storageLocati
 	bodyBytes, _ := json.Marshal(body)
 	req, err := newGeminiRequest(ctx, apiKey, bodyBytes)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	client := &http.Client{Timeout: 60 * time.Second}
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	defer resp.Body.Close()
 
 	respBody, err := io.ReadAll(io.LimitReader(resp.Body, 1<<20))
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("Gemini API returned status %d: %s", resp.StatusCode, string(respBody))
+		return "", fmt.Errorf("Gemini API returned status %d: %s", resp.StatusCode, string(respBody))
 	}
 
 	var geminiResp geminiContentResponse
 	if err := json.Unmarshal(respBody, &geminiResp); err != nil {
-		return nil, fmt.Errorf("failed to parse Gemini response: %w", err)
+		return "", fmt.Errorf("failed to parse Gemini response: %w", err)
 	}
 
 	if len(geminiResp.Candidates) == 0 || len(geminiResp.Candidates[0].Content.Parts) == 0 {
-		return nil, fmt.Errorf("empty Gemini response")
+		return "", fmt.Errorf("empty Gemini response")
 	}
 
 	text := geminiResp.Candidates[0].Content.Parts[0].Text
@@ -586,32 +710,55 @@ func callAIVisionBase64(ctx context.Context, base64Data, mimeType, storageLocati
 	text = strings.TrimSuffix(text, "```")
 	text = strings.TrimSpace(text)
 
+	if len(extractJSONObject(text)) == 0 {
+		return "", fmt.Errorf("no JSON found in Gemini response: %s", text)
+	}
+	return text, nil
+}
+
+func extractJSONObject(text string) []byte {
+	text = strings.TrimSpace(text)
+	text = strings.TrimPrefix(text, "```json")
+	text = strings.TrimPrefix(text, "```")
+	text = strings.TrimSuffix(text, "```")
+	text = strings.TrimSpace(text)
 	start := strings.Index(text, "{")
 	end := strings.LastIndex(text, "}") + 1
 	if start == -1 || end == 0 {
-		return nil, fmt.Errorf("no JSON found in Gemini response: %s", text)
+		return nil
 	}
-
-	var result aiVisionResult
-	if err := json.Unmarshal([]byte(text[start:end]), &result); err != nil {
-		return nil, fmt.Errorf("failed to parse AI response JSON: %w", err)
-	}
-
-	return &result, nil
+	return []byte(text[start:end])
 }
 
-// geminiRecommendPrompt is the system prompt for usage recommendations.
-func geminiRecommendPrompt(productNames string) string {
-	return fmt.Sprintf(`Berikut adalah daftar bahan makanan/barang rumah tangga yang akan segera kedaluwarsa:
+type aiUsageIdea struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	ItemIndexes []int  `json:"item_indexes"`
+}
+
+type aiUsageIdeaResponse struct {
+	Ideas []aiUsageIdea `json:"ideas"`
+}
+
+// geminiRecommendPrompt asks for small, practical plans that can use several urgent items together.
+func geminiRecommendPrompt(productNames []string) string {
+	indexedNames := make([]string, 0, len(productNames))
+	for index, name := range productNames {
+		indexedNames = append(indexedNames, fmt.Sprintf("%d. %s", index, name))
+	}
+
+	return fmt.Sprintf(`Berikut bahan makanan/barang rumah tangga yang perlu dipakai dalam tujuh hari:
 %s
 
-Beri 1 saran singkat (nama resep atau cara pakai) untuk setiap barang agar tidak terbuang.
-Kembalikan JSON array berisi string: ["saran1", "saran2", ...]
-Pastikan jumlah saran sama dengan jumlah barang. Hanya kembalikan JSON array, tanpa teks lain.`, productNames)
+Buat 1 sampai 3 ide pemakaian yang praktis dan terasa realistis untuk rumah tangga. Sebisa mungkin gabungkan beberapa bahan yang cocok dalam satu ide (misalnya resep sederhana, bekal, atau cara mengolah), bukan satu saran terpisah untuk setiap bahan. Jangan menyarankan konsumsi jika bahan tampak tidak aman; sarankan pemeriksaan kondisi bila relevan.
+
+Kembalikan HANYA JSON dengan bentuk persis ini:
+{"ideas":[{"title":"nama ide singkat","description":"langkah atau alasan singkat","item_indexes":[0,1]}]}
+Gunakan hanya indeks dari daftar di atas. Setiap ide harus memiliki minimal satu indeks dan tanpa indeks duplikat.`, strings.Join(indexedNames, "\n"))
 }
 
-// callAIRecommendation sends item names to Gemini and returns usage tips.
-func callAIRecommendation(ctx context.Context, productNames []string) ([]string, error) {
+// callAIRecommendation sends item names to Gemini and returns grouped usage ideas.
+func callAIRecommendation(ctx context.Context, productNames []string) ([]aiUsageIdea, error) {
 	apiKey, err := nextGeminiKey()
 	if err != nil {
 		return nil, err
@@ -622,7 +769,7 @@ func callAIRecommendation(ctx context.Context, productNames []string) ([]string,
 			{
 				"parts": []map[string]interface{}{
 					{
-						"text": geminiRecommendPrompt(strings.Join(productNames, ", ")),
+						"text": geminiRecommendPrompt(productNames),
 					},
 				},
 			},
@@ -674,16 +821,10 @@ func callAIRecommendation(ctx context.Context, productNames []string) ([]string,
 	text = strings.TrimSuffix(text, "```")
 	text = strings.TrimSpace(text)
 
-	start := strings.Index(text, "[")
-	end := strings.LastIndex(text, "]") + 1
-	if start == -1 || end == 0 {
-		return nil, fmt.Errorf("no JSON array found in Gemini response: %s", text)
+	var response aiUsageIdeaResponse
+	if err := json.Unmarshal(extractJSONObject(text), &response); err != nil {
+		return nil, fmt.Errorf("failed to parse AI usage ideas: %w", err)
 	}
 
-	var recommendations []string
-	if err := json.Unmarshal([]byte(text[start:end]), &recommendations); err != nil {
-		return nil, fmt.Errorf("failed to parse AI recommendations: %w", err)
-	}
-
-	return recommendations, nil
+	return response.Ideas, nil
 }

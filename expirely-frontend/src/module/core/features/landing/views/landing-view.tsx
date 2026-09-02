@@ -12,7 +12,6 @@ import Paper from '@mui/material/Paper';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Rating from '@mui/material/Rating';
-import Slider from '@mui/material/Slider';
 import Container from '@mui/material/Container';
 import Accordion from '@mui/material/Accordion';
 import Typography from '@mui/material/Typography';
@@ -46,9 +45,6 @@ export function LandingView() {
   const [quotaCount, setQuotaCount] = useState(2);
   const [showRewardedAdMsg, setShowRewardedAdMsg] = useState(false);
 
-  // Calculator state (monthly spend in IDR)
-  const [monthlySpend, setMonthlySpend] = useState<number>(3000000);
-
   // FAQ expanded state
   const [expandedFaq, setExpandedFaq] = useState<string | false>('panel0');
 
@@ -77,16 +73,6 @@ export function LandingView() {
       setShowRewardedAdMsg(false);
     }, 1200);
   };
-
-  // Calculated annual savings (estimated 18% food waste saved)
-  const yearlySavings = Math.round(monthlySpend * 12 * 0.18);
-
-  const formatCurrency = (val: number) =>
-    new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      maximumFractionDigits: 0,
-    }).format(val);
 
   return (
     <Box sx={{ minHeight: 1, bgcolor: 'background.default' }}>
@@ -144,14 +130,6 @@ export function LandingView() {
               sx={{ fontWeight: 600 }}
             >
               {t('header.nav.howItWorks')}
-            </Button>
-            <Button
-              color="inherit"
-              onClick={handleScrollTo('calculator')}
-              size="small"
-              sx={{ fontWeight: 600 }}
-            >
-              {t('header.nav.calculator')}
             </Button>
             <Button
               color="inherit"
@@ -902,94 +880,6 @@ export function LandingView() {
           ))}
         </Box>
       </Container>
-
-      {/* SECTION: SAVINGS CALCULATOR */}
-      <Box id="calculator" sx={{ py: { xs: 8, md: 12 }, bgcolor: 'background.neutral' }}>
-        <Container maxWidth="lg">
-          <Card
-            sx={{
-              p: { xs: 3.5, md: 6 },
-              borderRadius: 4,
-              boxShadow: (theme) => theme.customShadows.z24,
-            }}
-          >
-            <Stack spacing={4}>
-              <Stack spacing={1.5} alignItems="center" textAlign="center">
-                <Chip label={t('calculator.eyebrow')} color="success" variant="soft" />
-                <Typography variant="h2" fontWeight={800}>
-                  {t('calculator.title')}
-                </Typography>
-                <Typography variant="body1" color="text.secondary" maxWidth={640}>
-                  {t('calculator.description')}
-                </Typography>
-              </Stack>
-
-              <Box sx={{ maxW: 640, mx: 'auto', width: 1 }}>
-                <Typography variant="subtitle1" fontWeight={700} gutterBottom>
-                  {t('calculator.monthlyLabel')} {formatCurrency(monthlySpend)}
-                </Typography>
-                <Slider
-                  value={monthlySpend}
-                  min={500000}
-                  max={10000000}
-                  step={250000}
-                  onChange={(_, val) => setMonthlySpend(val as number)}
-                  valueLabelDisplay="auto"
-                  valueLabelFormat={(val) => formatCurrency(val)}
-                  sx={{ my: 2 }}
-                />
-
-                <Paper
-                  sx={{
-                    p: 3.5,
-                    mt: 3,
-                    borderRadius: 3,
-                    bgcolor: 'background.neutral',
-                    border: '1px solid',
-                    borderColor: 'success.main',
-                  }}
-                >
-                  <Stack
-                    direction={{ xs: 'column', sm: 'row' }}
-                    spacing={2}
-                    alignItems="center"
-                    justifyContent="space-between"
-                  >
-                    <Box textAlign={{ xs: 'center', sm: 'left' }}>
-                      <Typography variant="subtitle2" fontWeight={600} color="text.secondary">
-                        {t('calculator.yearlySavings')}
-                      </Typography>
-                      <Typography variant="h3" fontWeight={800} color="success.main">
-                        {formatCurrency(yearlySavings)}
-                      </Typography>
-                    </Box>
-                    <Box textAlign={{ xs: 'center', sm: 'right' }}>
-                      <Typography variant="subtitle2" fontWeight={600} color="text.secondary">
-                        {t('calculator.foodSavedLabel')}
-                      </Typography>
-                      <Typography variant="h6" fontWeight={700} color="text.primary">
-                        {t('calculator.foodSavedValue')}
-                      </Typography>
-                    </Box>
-                  </Stack>
-                </Paper>
-
-                <Button
-                  component={RouterLink}
-                  href={paths.auth.jwt.signIn}
-                  fullWidth
-                  size="large"
-                  variant="contained"
-                  color="primary"
-                  sx={{ mt: 3.5, minHeight: 54, borderRadius: 2.5, fontWeight: 700 }}
-                >
-                  {t('calculator.cta')}
-                </Button>
-              </Box>
-            </Stack>
-          </Card>
-        </Container>
-      </Box>
 
       {/* SECTION: SPONSORS & ADS PLACEHOLDER */}
       <Box id="sponsors" sx={{ py: { xs: 8, md: 12 } }}>

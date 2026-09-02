@@ -10,6 +10,13 @@ type CreateItemRequest struct {
 	IsEstimated bool    `json:"is_estimated"`
 }
 
+// CreateFromPhotoRequest is the payload shared by single and batch photo recognition.
+type CreateFromPhotoRequest struct {
+	PhotoBase64     string `json:"photo_base64" binding:"required"`
+	MimeType        string `json:"mime_type"`
+	StorageLocation string `json:"storage_location" binding:"omitempty,oneof=room_temperature refrigerator freezer pantry unknown"`
+}
+
 // UpdateItemRequest is the payload for editing an item.
 type UpdateItemRequest struct {
 	NamaProduk  *string `json:"nama_produk" binding:"omitempty,min=1,max=255"`
@@ -63,6 +70,13 @@ type ItemListResponse struct {
 	Total int64          `json:"total"`
 }
 
+// PhotoBatchResponse contains every item recognized from one photo.
+// Recognition quota is consumed once per submitted photo, not per returned item.
+type PhotoBatchResponse struct {
+	Items []ItemResponse `json:"items"`
+	Total int            `json:"total"`
+}
+
 // RecommendRequest is the payload for AI recommendation.
 type RecommendRequest struct {
 	Items []RecommendItem `json:"items" binding:"required,min=1,max=20,dive"`
@@ -76,14 +90,19 @@ type RecommendItem struct {
 
 // RecommendResponse is the AI recommendation result.
 type RecommendResponse struct {
-	Recommendations []Recommendation `json:"recommendations"`
+	UsageIdeas []UsageIdea `json:"usage_ideas"`
 }
 
-// Recommendation is a single recommendation.
-type Recommendation struct {
-	ItemID      string `json:"item_id"`
-	NamaProduk  string `json:"nama_produk"`
-	Rekomendasi string `json:"rekomendasi"`
+// UsageIdea is an actionable suggestion that can combine multiple urgent items.
+type UsageIdea struct {
+	Title       string          `json:"title"`
+	Description string          `json:"description"`
+	Items       []UsageIdeaItem `json:"items"`
+}
+
+type UsageIdeaItem struct {
+	ID         string `json:"id"`
+	NamaProduk string `json:"nama_produk"`
 }
 
 // QuotaResponse shows daily quota status.
